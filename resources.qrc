@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>img/moreinf.png</file>
-        <file>img/down-arrow.png</file>
-        <file>img/logo.black.2048px.png</file>
-        <file>img/up-arrow.png</file>
-    </qresource>
-</RCC>
