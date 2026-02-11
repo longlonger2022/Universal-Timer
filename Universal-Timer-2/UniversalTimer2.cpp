@@ -25,7 +25,11 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     TrayIcon = new QSystemTrayIcon(QIcon(":/img/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
     QMenu *TrayIconMenu = new QMenu(this); // 系统托盘菜单
-    TrayIconMenu->addAction(tr("设置"), this, SLOT(showNormal())); // 系统托盘菜单项：设置
+    TrayIconMenu->addAction(tr("设置"), this, [&] {
+        is_setting = true;
+        BigWindow->show();
+        FullScreenAnimationGroup->start();
+        }); // 系统托盘菜单项：设置
     TrayIconMenu->addAction(tr("刷新"), this, SLOT(readConfig())); // 系统托盘菜单项：刷新
     TrayIconMenu->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->setContextMenu(TrayIconMenu);
@@ -48,8 +52,12 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     BigWindowBackgroundLabel->resize(desktop.size());
     BigWindowBackgroundLabel->setStyleSheet("background: rgba(0, 0, 0, 0.75)");
 
-    BigWindowSettingsUnderlyingLabel = new QLabel(BigWindow); // 设置背景标签
-    BigWindowSettingsUnderlyingLabel->hide();
+    SettingsUnderlyingLabel = new QLabel(BigWindow); // 设置背景标签
+    // 在Debug下编译时
+#ifdef QT_DEBUG
+    SettingsUnderlyingLabel->setStyleSheet("border: 1px solid red;");
+#endif
+    SettingsUnderlyingLabel->hide();
 
     ReminderUnderlyingLabel = new QLabel(BigWindow); // 提醒背景标签
     // 在Debug下编译时
@@ -96,25 +104,102 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
 
 
     // GroupBox
-    BigWindowSettingsTextAndDateGroupBox = new QGroupBox(tr("文本和时间"), BigWindowSettingsUnderlyingLabel); // 设置文本和日期组框
-    BigWindowSettingsTextAndDateGroupBox->show();
+    SettingsTextAndDateGroupBox = new QGroupBox(tr("文本和时间"), SettingsUnderlyingLabel); // 设置文本和日期分组框
+    SettingsTextAndDateGroupBox->resize(desktop.width() * 0.4, 0);
+    font.setPixelSize(desktop.height() * 0.015);
+    SettingsTextAndDateGroupBox->setFont(font);
+    SettingsTextAndDateGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QLabel{color: white}");
+    SettingsTextAndDateGroupBox->show();
+    SettingsReminderGroupBox = new QGroupBox(tr("全屏提醒"), SettingsUnderlyingLabel); // 设置全屏提醒分组框
+    SettingsReminderGroupBox->setGeometry(SettingsTextAndDateGroupBox->width() + desktop.width() * 0.1, 0, desktop.width() * 0.4, 0);
+    SettingsReminderGroupBox->setFont(font);
+    SettingsReminderGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QCheckBox {color: white;}");
+    SettingsReminderGroupBox->show();
+    SettingsSmallWindowGroupBox = new QGroupBox(tr("悬浮条设置"), SettingsUnderlyingLabel); // 设置悬浮条分组框
+    SettingsSmallWindowGroupBox->setGeometry(0, SettingsTextAndDateGroupBox->height() + desktop.height() * 0.1, desktop.width() * 0.4, 0);
+    SettingsSmallWindowGroupBox->setFont(font);
+    SettingsSmallWindowGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QRadioButton {color: white;}");
+    SettingsSmallWindowGroupBox->show();
+
+    
+    // ButtonGroup
+    SettingsSmallWindowLevelButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
+    SettingsSmallWindowLevelButtonGroup->setExclusive(true);
+    SettingsSmallWindowPositionButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
+    SettingsSmallWindowPositionButtonGroup->setExclusive(true);
     
 
     // Label in GroupBox
-    BigWindowSettingsSmallWindowTextLabel = new QLabel(tr("悬浮条文本："), BigWindowSettingsTextAndDateGroupBox); // 悬浮条文本标签
-    BigWindowSettingsSmallWindowTextLabel->show();
-    BigWindowSettingsBigWindowTextLabel = new QLabel(tr("全屏提醒文本："), BigWindowSettingsTextAndDateGroupBox); // 全屏窗口文本标签
-    BigWindowSettingsBigWindowTextLabel->show();
-    BigWindowSettingsBigWindowSmallTextLabel = new QLabel(tr("全屏提醒小文本："), BigWindowSettingsTextAndDateGroupBox); // 全屏窗口小文本标签
-    BigWindowSettingsBigWindowSmallTextLabel->show();
-    BigWindowSettingsTargetDateTimeLabel = new QLabel(tr("目标时间："), BigWindowSettingsTextAndDateGroupBox); // 目标时间标签
-    BigWindowSettingsTargetDateTimeLabel->show();
+    SettingsSmallWindowTextLabel = new QLabel(tr("悬浮条文本："), SettingsTextAndDateGroupBox); // 悬浮条文本标签
+    font.setPixelSize(desktop.height() * 0.025);
+    SettingsSmallWindowTextLabel->setFont(font);
+    SettingsSmallWindowTextLabel->show();
+    SettingsBigWindowTextLabel = new QLabel(tr("全屏提醒文本："), SettingsTextAndDateGroupBox); // 全屏窗口文本标签
+    SettingsBigWindowTextLabel->setFont(font);
+    SettingsBigWindowTextLabel->show();
+    SettingsBigWindowSmallTextLabel = new QLabel(tr("全屏提醒小文本："), SettingsTextAndDateGroupBox); // 全屏窗口小文本标签
+    SettingsBigWindowSmallTextLabel->setFont(font);
+    SettingsBigWindowSmallTextLabel->show();
+    SettingsTargetDateTimeLabel = new QLabel(tr("目标时间："), SettingsTextAndDateGroupBox); // 目标时间标签
+    SettingsTargetDateTimeLabel->setFont(font);
+    SettingsTargetDateTimeLabel->show();
 
 
     // LineEdit in GroupBox
-    BigWindowSettingsSmallWindowTextLineEdit = new QLineEdit(SmallWindow_text, BigWindowSettingsTextAndDateGroupBox); // 悬浮条文本输入框
-    BigWindowSettingsSmallWindowTextLineEdit->show();
-    BigWindowSettingsBigWindowTextLineEdit = new QLineEdit(BigWindow_text, BigWindowSettingsTextAndDateGroupBox); // 全屏窗口
+    SettingsSmallWindowTextLineEdit = new QLineEdit(SmallWindow_text, SettingsTextAndDateGroupBox); // 悬浮条文本输入框
+    SettingsSmallWindowTextLineEdit->show();
+    SettingsBigWindowTextLineEdit = new QLineEdit(BigWindow_text, SettingsTextAndDateGroupBox); // 全屏窗口文本输入框
+    SettingsBigWindowTextLineEdit->show();
+    SettingsBigWindowSmallTextLineEdit = new QLineEdit(BigWindow_small_text, SettingsTextAndDateGroupBox); // 全屏窗口小文本输入框
+    SettingsBigWindowSmallTextLineEdit->show();
+
+    // DateTimeEdit in GroupBox
+    SettingsTargetDateTimeEdit = new QDateTimeEdit(SettingsTextAndDateGroupBox); // 目标时间输入框
+    SettingsTargetDateTimeEdit->setDateTime(targetDateTime);
+    SettingsTargetDateTimeEdit->setCalendarPopup(true);
+    // 精确到秒
+    SettingsTargetDateTimeEdit->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
+    SettingsTargetDateTimeEdit->show();
+
+    // CheckBox in GroupBox
+    SettingsIsShowBigWindowCheckBox = new QCheckBox(tr("显示全屏窗口"), SettingsReminderGroupBox); // 显示全屏窗口复选框
+    SettingsIsShowBigWindowCheckBox->setChecked(is_show_BigWindow);
+    SettingsIsShowBigWindowCheckBox->show();
+
+    // SpinBox in GroupBox
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox = new QSpinBox(SettingsReminderGroupBox); // 剩余天数播放倒计时声音
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox->setValue(remaining_days_to_play_countdown_sound);
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox->setPrefix(tr("剩余天数≤"));
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox->setSuffix(tr("天时播放倒计时提醒音"));
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox->show();
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox = new QSpinBox(SettingsReminderGroupBox); // 剩余天数播放心跳声音
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setValue(remaining_days_to_play_heartbeat_sound);
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setPrefix(tr("剩余天数≤"));
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr("天时播放心跳提醒音"));
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->show();
+
+    // RadioButton in GroupBox
+    SettingsSmallWindowOnTopRadioButton = new QRadioButton(tr("悬浮条置顶"), SettingsSmallWindowGroupBox); // 悬浮条置顶单选按钮
+    SettingsSmallWindowOnTopRadioButton->setChecked(SmallWindow_on_top);
+    SettingsSmallWindowOnTopRadioButton->show();
+    SettingsSmallWindowOnBottomRadioButton = new QRadioButton(tr("悬浮条置底"), SettingsSmallWindowGroupBox); // 悬浮条置底单选按钮
+    SettingsSmallWindowOnBottomRadioButton->setChecked(!SmallWindow_on_top);
+    SettingsSmallWindowOnBottomRadioButton->show();
+    SettingsSmallWindowLevelButtonGroup->addButton(SettingsSmallWindowOnTopRadioButton);
+    SettingsSmallWindowLevelButtonGroup->addButton(SettingsSmallWindowOnBottomRadioButton);
+
+    SettingsSmallWindowPositionTopLeftRadioButton = new QRadioButton(tr("悬浮条位于左上"), SettingsSmallWindowGroupBox); // 悬浮条位置左上单选按钮
+    SettingsSmallWindowPositionTopLeftRadioButton->setChecked(SmallWindow_position == 0);
+    SettingsSmallWindowPositionTopLeftRadioButton->show();
+    SettingsSmallWindowPositionTopCenterRadioButton = new QRadioButton(tr("悬浮条位于中上"), SettingsSmallWindowGroupBox); // 悬浮条位置中上单选按钮
+    SettingsSmallWindowPositionTopCenterRadioButton->setChecked(SmallWindow_position == 1);
+    SettingsSmallWindowPositionTopCenterRadioButton->show();
+    SettingsSmallWindowPositionTopRightRadioButton = new QRadioButton(tr("悬浮条位于右上"), SettingsSmallWindowGroupBox); // 悬浮条位置右上
+    SettingsSmallWindowPositionTopRightRadioButton->setChecked(SmallWindow_position == 2);
+    SettingsSmallWindowPositionTopRightRadioButton->show();
+    SettingsSmallWindowPositionButtonGroup->addButton(SettingsSmallWindowPositionTopLeftRadioButton);
+    SettingsSmallWindowPositionButtonGroup->addButton(SettingsSmallWindowPositionTopCenterRadioButton);
+    SettingsSmallWindowPositionButtonGroup->addButton(SettingsSmallWindowPositionTopRightRadioButton);
 
 
     // Animation
@@ -150,18 +235,73 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         BigWindowBackgroundLabel->show();
         if (is_welcome) {
             ReminderUnderlyingLabel->hide();
+            SettingsUnderlyingLabel->hide();
         }
         else if (!is_setting) {
             ReminderUnderlyingLabel->show();
+            SettingsUnderlyingLabel->hide();
         }
+        else {
+            ReminderUnderlyingLabel->hide();
+            SettingsUnderlyingLabel->show();
+        }
+        updateObjects();
         });
     connect(FullScreenAnimationGroup, &QSequentialAnimationGroup::finished, [&] {
-        QTimer::singleShot(3000, this, [&] {BigWindowHideAnimation->start(); });
+        if (!is_welcome && !is_setting) {
+            QTimer::singleShot(3000, this, [&] {BigWindowHideAnimation->start(); });
+        }
         });
     connect(BigWindowHideAnimation, &QPropertyAnimation::finished, [&] {
         BigWindow->setWindowOpacity(1);
         BigWindow->hide();
         ReminderUnderlyingLabel->hide();
+        SettingsUnderlyingLabel->hide();
+        });
+
+    connect(SettingsSmallWindowTextLineEdit, &QLineEdit::textChanged, this, [&] {
+        SmallWindow_text = SettingsSmallWindowTextLineEdit->text();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsBigWindowTextLineEdit, &QLineEdit::textChanged, this, [&] {
+        BigWindow_text = SettingsBigWindowTextLineEdit->text();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsBigWindowSmallTextLineEdit, &QLineEdit::textChanged, this, [&] {
+        BigWindow_small_text = SettingsBigWindowSmallTextLineEdit->text();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsTargetDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [&] {
+        targetDateTime = SettingsTargetDateTimeEdit->dateTime();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsIsShowBigWindowCheckBox, &QCheckBox::checkStateChanged, this, [&] {
+        is_show_BigWindow = SettingsIsShowBigWindowCheckBox->isChecked();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsSmallWindowOnTopRadioButton, &QRadioButton::toggled, this, [&] {
+        SmallWindow_on_top = SettingsSmallWindowOnTopRadioButton->isChecked();
+        this->setWindowFlags((SmallWindow_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        this->show();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsSmallWindowOnBottomRadioButton, &QRadioButton::toggled, this, [&] {
+        SmallWindow_on_top = !SettingsSmallWindowOnBottomRadioButton->isChecked();
+        this->setWindowFlags((SmallWindow_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        this->show();
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsSmallWindowPositionTopLeftRadioButton, &QRadioButton::toggled, this, [&] {
+        SmallWindow_position = SettingsSmallWindowPositionTopLeftRadioButton->isChecked() ? 0 : SmallWindow_position;
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsSmallWindowPositionTopCenterRadioButton, &QRadioButton::toggled, this, [&] {
+        SmallWindow_position = SettingsSmallWindowPositionTopCenterRadioButton->isChecked() ? 1 : SmallWindow_position;
+        writeConfig(); // 写入配置文件
+        });
+    connect(SettingsSmallWindowPositionTopRightRadioButton, &QRadioButton::toggled, this, [&] {
+        SmallWindow_position = SettingsSmallWindowPositionTopRightRadioButton->isChecked() ? 2 : SmallWindow_position;
+        writeConfig(); // 写入配置文件
         });
 }
 
@@ -175,12 +315,18 @@ void UniversalTimer2::readConfig() {
         QSettings settings("config.ini", QSettings::IniFormat);
 
         is_show_BigWindow = settings.value("is_show_BigWindow").toBool(); // 是否显示全屏窗口
+        SettingsIsShowBigWindowCheckBox->setChecked(is_show_BigWindow);
 
         is_show_SmallWindow = settings.value("is_show_SmallWindow").toBool(); // 是否显示悬浮条
         if (!is_show_SmallWindow) {
             this->hide();
             SmallWindowLabel->hide();
         }
+
+        SmallWindow_on_top = settings.value("SmallWindow_on_top").toBool(); // 悬浮条是否置顶
+        this->setWindowFlags((SmallWindow_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        SettingsSmallWindowOnTopRadioButton->setChecked(SmallWindow_on_top);
+        SettingsSmallWindowOnBottomRadioButton->setChecked(!SmallWindow_on_top);
 
         border_radius = settings.value("border_radius").toInt(); // 窗口圆角
         SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(border_radius) + "px; color: red;"); // 更新悬浮条样式
@@ -190,10 +336,15 @@ void UniversalTimer2::readConfig() {
             targetDateTime = QDateTime::currentDateTime().addDays(1); // 默认设置为明天
             writeLog("WARNING", "目标时间无效，已设置为默认值：明天");
         }
+        SettingsTargetDateTimeEdit->setDateTime(targetDateTime); // 更新目标时间输入框
 
         SmallWindow_text = settings.value("SmallWindow_text").toString(); // 悬浮条文本
+        SettingsSmallWindowTextLineEdit->setText(SmallWindow_text);
 
         SmallWindow_position = settings.value("SmallWindow_position").toInt(); // 悬浮条位置
+        SettingsSmallWindowPositionTopLeftRadioButton->setChecked(SmallWindow_position == 0);
+        SettingsSmallWindowPositionTopCenterRadioButton->setChecked(SmallWindow_position == 1);
+        SettingsSmallWindowPositionTopRightRadioButton->setChecked(SmallWindow_position == 2);
 
         SmallWindow_height = settings.value("SmallWindow_height").toInt(); // 悬浮条高度
         font.setPixelSize(SmallWindow_height * 0.618);
@@ -202,8 +353,10 @@ void UniversalTimer2::readConfig() {
         BigWindow_text = settings.value("BigWindow_text").toString(); // 全屏窗口文本
         ReminderTextLabel->setText(BigWindow_text);
         ReminderTextLabel->adjustSize();
+        SettingsBigWindowTextLineEdit->setText(BigWindow_text);
 
         BigWindow_small_text = settings.value("BigWindow_small_text").toString(); // 全屏窗口小文本
+        SettingsBigWindowSmallTextLineEdit->setText(BigWindow_small_text);
 
         update_interval = settings.value("update_interval").toInt(); // 更新间隔时间
 
@@ -224,15 +377,20 @@ void UniversalTimer2::readConfig() {
         WelcomeLabel->setAlignment(Qt::AlignCenter);
         WelcomeLabel->resize(desktop.size());
         WelcomeLabel->setStyleSheet("color: white; font-size: 40px; font-weight: bold; background: transparent;");
+        BigWindowBackgroundLabel->setPixmap(QPixmap(":/img/background/Universal-Timer.png"));
+        BigWindowBackgroundLabel->setScaledContents(true);
         WelcomeLabel->show();
         WelcomeButton = new QPushButton(tr("开始"), WelcomeLabel);
         WelcomeButton->setGeometry(desktop.width() * 0.45, desktop.height() * 0.6, desktop.width() * 0.1, desktop.height() * 0.1);
         WelcomeButton->setStyleSheet("color: white; font-size: 20px; font-weight: bold; background: rgba(0, 0, 0, 0.5); border-radius: 10px;");
         WelcomeButton->show();
         connect(WelcomeButton, &QPushButton::clicked, [&] {
+            is_welcome = false;
             BigWindowHideAnimation->start();
             WelcomeLabel->deleteLater();
             WelcomeButton->deleteLater();
+            // 删除背景图片
+            BigWindowBackgroundLabel->setPixmap(QPixmap());
             });
         // 创建配置文件
         writeConfig();
@@ -247,6 +405,7 @@ void UniversalTimer2::writeConfig() {
     QSettings settings("config.ini", QSettings::IniFormat);
     settings.setValue("is_show_BigWindow", is_show_BigWindow);
     settings.setValue("is_show_SmallWindow", is_show_SmallWindow);
+    settings.setValue("SmallWindow_on_top", SmallWindow_on_top);
     settings.setValue("border_radius", border_radius);
     settings.setValue("targetDateTime", targetDateTime.toString("yyyy-MM-dd hh:mm:ss"));
     settings.setValue("SmallWindow_text", SmallWindow_text);
@@ -321,7 +480,6 @@ void UniversalTimer2::showBigWindow() {
     // 更新标签文本
     ReminderNumberLabel->setText(QString::number(timeLeft / 86400));
     ReminderSmallTextLabel->setText(BigWindow_small_text + QString::number(timeLeft / 86400) + " DAYS");
-    updateObjects();
     adjustReminderSize(1.0);
     ReminderUnderlyingLabel->move((desktop.width() - ReminderUnderlyingLabel->width()) / 2, (desktop.height() - ReminderUnderlyingLabel->height()) / 2);
 
@@ -392,6 +550,48 @@ void UniversalTimer2::updateObjects() {
         adjustReminderSize(1.0);
         ReminderUnderlyingLabel->move((desktop.width() - ReminderUnderlyingLabel->width()) / 2, (desktop.height() - ReminderUnderlyingLabel->height()) / 2);
     }
+    else if (SettingsUnderlyingLabel->isVisible()) {
+        // 更新位置大小
+        SettingsSmallWindowTextLabel->adjustSize();
+        SettingsSmallWindowTextLabel->move(desktop.height() * 0.015, desktop.height() * 0.015);
+        SettingsSmallWindowTextLineEdit->setGeometry(SettingsSmallWindowTextLabel->x() + SettingsSmallWindowTextLabel->width(), SettingsSmallWindowTextLabel->y(), SettingsTextAndDateGroupBox->width() - SettingsSmallWindowTextLabel->width() - desktop.height() * 0.0275, SettingsSmallWindowTextLabel->height());
+        SettingsBigWindowTextLabel->adjustSize();
+        SettingsBigWindowTextLabel->move(SettingsSmallWindowTextLabel->x(), SettingsSmallWindowTextLabel->y() + SettingsSmallWindowTextLabel->height());
+        SettingsBigWindowTextLineEdit->setGeometry(SettingsBigWindowTextLabel->x() + SettingsBigWindowTextLabel->width(), SettingsBigWindowTextLabel->y(), SettingsTextAndDateGroupBox->width() - SettingsBigWindowTextLabel->width() - desktop.height() * 0.0275, SettingsBigWindowTextLabel->height());
+        SettingsBigWindowSmallTextLabel->adjustSize();
+        SettingsBigWindowSmallTextLabel->move(SettingsBigWindowTextLabel->x(), SettingsBigWindowTextLineEdit->y() + SettingsBigWindowTextLineEdit->height());
+        SettingsBigWindowSmallTextLineEdit->setGeometry(SettingsBigWindowSmallTextLabel->x() + SettingsBigWindowSmallTextLabel->width(), SettingsBigWindowSmallTextLabel->y(), SettingsTextAndDateGroupBox->width() - SettingsBigWindowSmallTextLabel->width() - desktop.height() * 0.0275, SettingsBigWindowSmallTextLabel->height());
+        SettingsTargetDateTimeLabel->adjustSize();
+        SettingsTargetDateTimeLabel->move(SettingsBigWindowSmallTextLabel->x(), SettingsBigWindowSmallTextLineEdit->y() + SettingsBigWindowSmallTextLineEdit->height());
+        SettingsTargetDateTimeEdit->setGeometry(SettingsTargetDateTimeLabel->x() + SettingsTargetDateTimeLabel->width(), SettingsTargetDateTimeLabel->y(), SettingsTextAndDateGroupBox->width() - SettingsTargetDateTimeLabel->width() - desktop.height() * 0.0275, SettingsTargetDateTimeLabel->height());
+        SettingsTextAndDateGroupBox->adjustSize();
+
+        SettingsIsShowBigWindowCheckBox->adjustSize();
+        SettingsIsShowBigWindowCheckBox->setGeometry(desktop.height() * 0.015, desktop.height() * 0.015, SettingsReminderGroupBox->width() - desktop.height() * 0.0275, SettingsIsShowBigWindowCheckBox->height());
+        SettingsRemainingDaysToPlayCountdownSoundSpinBox->adjustSize();
+        SettingsRemainingDaysToPlayCountdownSoundSpinBox->setGeometry(SettingsIsShowBigWindowCheckBox->x(), SettingsIsShowBigWindowCheckBox->y() + SettingsIsShowBigWindowCheckBox->height(), SettingsReminderGroupBox->width() - desktop.height() * 0.0275, SettingsRemainingDaysToPlayCountdownSoundSpinBox->height());
+        SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->adjustSize();
+        SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setGeometry(SettingsRemainingDaysToPlayCountdownSoundSpinBox->x(), SettingsRemainingDaysToPlayCountdownSoundSpinBox->y() + SettingsRemainingDaysToPlayCountdownSoundSpinBox->height(), SettingsReminderGroupBox->width() - desktop.height() * 0.0275, SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->height());
+        SettingsReminderGroupBox->adjustSize();
+        SettingsReminderGroupBox->move(SettingsTextAndDateGroupBox->x() + SettingsTextAndDateGroupBox->width() + desktop.width() * 0.1, SettingsTextAndDateGroupBox->y());
+
+        SettingsSmallWindowOnTopRadioButton->adjustSize();
+        SettingsSmallWindowOnTopRadioButton->setGeometry(desktop.height() * 0.015, desktop.height() * 0.015, SettingsSmallWindowGroupBox->width() - desktop.height() * 0.0275, SettingsSmallWindowOnTopRadioButton->height());
+        SettingsSmallWindowOnBottomRadioButton->adjustSize();
+        SettingsSmallWindowOnBottomRadioButton->setGeometry(SettingsSmallWindowOnTopRadioButton->x(), SettingsSmallWindowOnTopRadioButton->y() + SettingsSmallWindowOnTopRadioButton->height(), SettingsSmallWindowGroupBox->width() - desktop.height() * 0.0275, SettingsSmallWindowOnBottomRadioButton->height());
+        SettingsSmallWindowPositionTopLeftRadioButton->adjustSize();
+        SettingsSmallWindowPositionTopLeftRadioButton->setGeometry(SettingsSmallWindowOnBottomRadioButton->x(), SettingsSmallWindowOnBottomRadioButton->y() + SettingsSmallWindowOnBottomRadioButton->height(), SettingsSmallWindowGroupBox->width() - desktop.height() * 0.0275, SettingsSmallWindowPositionTopLeftRadioButton->height());
+        SettingsSmallWindowPositionTopCenterRadioButton->adjustSize();
+        SettingsSmallWindowPositionTopCenterRadioButton->setGeometry(SettingsSmallWindowPositionTopLeftRadioButton->x(), SettingsSmallWindowPositionTopLeftRadioButton->y() + SettingsSmallWindowPositionTopLeftRadioButton->height(), SettingsSmallWindowGroupBox->width() - desktop.height() * 0.0275, SettingsSmallWindowPositionTopCenterRadioButton->height());
+        SettingsSmallWindowPositionTopRightRadioButton->adjustSize();
+        SettingsSmallWindowPositionTopRightRadioButton->setGeometry(SettingsSmallWindowPositionTopCenterRadioButton->x(), SettingsSmallWindowPositionTopCenterRadioButton->y() + SettingsSmallWindowPositionTopCenterRadioButton->height(), SettingsSmallWindowGroupBox->width() - desktop.height() * 0.0275, SettingsSmallWindowPositionTopRightRadioButton->height());
+        SettingsSmallWindowGroupBox->adjustSize();
+        SettingsSmallWindowGroupBox->move(SettingsTextAndDateGroupBox->x(), SettingsTextAndDateGroupBox->y() + SettingsTextAndDateGroupBox->height() + desktop.height() * 0.1);
+
+        SettingsUnderlyingLabel->resize(SettingsReminderGroupBox->x() + SettingsReminderGroupBox->width(), SettingsSmallWindowGroupBox->y() + SettingsSmallWindowGroupBox->height());
+        SettingsUnderlyingLabel->move((desktop.width() - SettingsUnderlyingLabel->width()) / 2, (desktop.height() - SettingsUnderlyingLabel->height()) / 2);
+    }
+    // 定时显示全屏提醒
     if (is_show_BigWindow && (!BigWindow->isVisible())) {
         if (timeList.contains(QTime::fromString(currentDateTime.toString("hh:mm:ss")))) {
             showBigWindow();

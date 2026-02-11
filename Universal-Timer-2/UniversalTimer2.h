@@ -11,6 +11,10 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QDateTimeEdit>
+#include <QSpinBox>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QButtonGroup>
 #include <QDateTime>
 #include <QTimer>
 
@@ -37,12 +41,15 @@ private:
 
     bool is_show_BigWindow = true; // 是否显示全屏窗口，默认显示
     bool is_show_SmallWindow = true; // 是否显示悬浮条，默认显示
+    bool SmallWindow_on_top = true; // 悬浮条是否置顶，默认置顶
 
     bool is_setting = false; // 是否在设置界面，默认不在
     bool is_welcome = false; // 是否在欢迎界面，默认在
 
     int border_radius = 10; // 窗口圆角，默认10
     int SmallWindow_height = 50; // 悬浮条高度，默认50
+    int remaining_days_to_play_countdown_sound = 30; // 剩余天数播放倒计时声音，默认30
+    int remaining_days_to_play_heartbeat_sound = 14; // 剩余天数播放心跳声音，默认14
 
     QFont font; // 字体
 
@@ -69,7 +76,13 @@ private:
     QWidget* BigWindow; // 全屏窗口
 
     // GroupBox
-    QGroupBox* BigWindowSettingsTextAndDateGroupBox; // 文本和时间设置分组框
+    QGroupBox* SettingsTextAndDateGroupBox; // 文本和时间设置分组框
+    QGroupBox* SettingsReminderGroupBox; // 全屏提醒设置分组框
+    QGroupBox* SettingsSmallWindowGroupBox; // 悬浮条设置分组框
+
+    // ButtonGroup
+    QButtonGroup* SettingsSmallWindowLevelButtonGroup; // 悬浮条层级按钮组
+    QButtonGroup* SettingsSmallWindowPositionButtonGroup; // 悬浮条位置按钮组
     
     // Label
     QLabel* WelcomeLabel; // 欢迎标签
@@ -77,11 +90,11 @@ private:
     QLabel* FullScreenAnimationLabel; // 红色全屏动画标签
     QLabel* BigWindowBackgroundLabel; // 全屏窗口背景标签
 
-    QLabel* BigWindowSettingsUnderlyingLabel; // 设置背景标签
-    QLabel* BigWindowSettingsSmallWindowTextLabel; // 设置悬浮条文本标签
-    QLabel* BigWindowSettingsBigWindowTextLabel; // 设置全屏窗口文本标签
-    QLabel* BigWindowSettingsBigWindowSmallTextLabel; // 设置全屏窗口小文本标签
-    QLabel* BigWindowSettingsTargetDateTimeLabel; // 设置目标时间标签
+    QLabel* SettingsUnderlyingLabel; // 设置背景标签
+    QLabel* SettingsSmallWindowTextLabel; // 设置悬浮条文本标签
+    QLabel* SettingsBigWindowTextLabel; // 设置全屏窗口文本标签
+    QLabel* SettingsBigWindowSmallTextLabel; // 设置全屏窗口小文本标签
+    QLabel* SettingsTargetDateTimeLabel; // 设置目标时间标签
 
     QLabel* ReminderUnderlyingLabel; // 全屏提醒背景标签
     QLabel* ReminderTextLabel; // 全屏提醒自定义文本标签
@@ -92,15 +105,30 @@ private:
     QLabel* ReminderColorLabel; // 全屏提醒颜色标签
 
     // LineEdit
-    QLineEdit* BigWindowSettingsSmallWindowTextLineEdit; // 设置悬浮条文本输入框
-    QLineEdit* BigWindowSettingsBigWindowTextLineEdit; // 设置全屏窗口文本输入框
-    QLineEdit* BigWindowSettingsBigWindowSmallTextLineEdit; // 设置全屏窗口小文本输入框
+    QLineEdit* SettingsSmallWindowTextLineEdit; // 设置悬浮条文本输入框
+    QLineEdit* SettingsBigWindowTextLineEdit; // 设置全屏窗口文本输入框
+    QLineEdit* SettingsBigWindowSmallTextLineEdit; // 设置全屏窗口小文本输入框
 
     // DateTimeEdit
-    QDateTimeEdit* BigWindowSettingsTargetDateTimeEdit; // 设置目标时间输入框
+    QDateTimeEdit* SettingsTargetDateTimeEdit; // 设置目标时间输入框
+
+    // SpinBox
+    QSpinBox* SettingsRemainingDaysToPlayCountdownSoundSpinBox; // 设置剩余天数播放倒计时声音输入框
+    QSpinBox* SettingsRemainingDaysToPlayHeartbeatSoundSpinBox; // 设置剩余天数播放心跳声音输入框
 
     // PushButton
     QPushButton* WelcomeButton; // 欢迎按钮
+
+    // CheckBox
+    QCheckBox* SettingsIsShowBigWindowCheckBox; // 设置是否显示全屏窗口复选框
+
+    // RadioButton
+    QRadioButton* SettingsSmallWindowPositionTopLeftRadioButton; // 设置悬浮条位置左上单选按钮
+    QRadioButton* SettingsSmallWindowPositionTopCenterRadioButton; // 设置悬浮条位置中上单选按钮
+    QRadioButton* SettingsSmallWindowPositionTopRightRadioButton; // 设置悬浮条位置右上单选按钮
+
+    QRadioButton* SettingsSmallWindowOnTopRadioButton; // 设置悬浮条置顶单选按钮
+    QRadioButton* SettingsSmallWindowOnBottomRadioButton; // 设置悬浮条置底单选按钮
 
     // Timer
     QTimer* Timer; // 定时器

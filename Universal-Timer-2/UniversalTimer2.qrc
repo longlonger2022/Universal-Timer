@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>img/Universal-Timer-2_icon.512px.png</file>
+        <file>img/background/Universal-Timer.png</file>
     </qresource>
 </RCC>
