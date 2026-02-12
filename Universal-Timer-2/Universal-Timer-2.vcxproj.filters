@@ -61,4 +61,7 @@
       <Filter>Translation Files</Filter>
     </QtTranslation>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
 </Project>

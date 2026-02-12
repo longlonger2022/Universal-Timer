@@ -79,11 +79,11 @@ BEGIN
         BLOCK "040004b0"
         BEGIN
             VALUE "FileDescription", "Universal-Timer"
-            VALUE "FileVersion", "2.0.0.0-Beta"
+            VALUE "FileVersion", "2.0.0.0-Beta.2"
             VALUE "LegalCopyright", "Copyright (C) 2026 龙ger_longer"
             VALUE "OriginalFilename", "Universal-Timer-2.exe"
             VALUE "ProductName", "Universal-Timer"
-            VALUE "ProductVersion", "2.0.0.0-Beta"
+            VALUE "ProductVersion", "2.0.0.0-Beta.2"
         END
     END
     BLOCK "VarFileInfo"

@@ -47,7 +47,7 @@ private:
     bool is_welcome = false; // 是否在欢迎界面，默认在
 
     int border_radius = 10; // 窗口圆角，默认10
-    int SmallWindow_height = 50; // 悬浮条高度，默认50
+    unsigned short SmallWindow_height = 50; // 悬浮条高度，默认50
     int remaining_days_to_play_countdown_sound = 30; // 剩余天数播放倒计时声音，默认30
     int remaining_days_to_play_heartbeat_sound = 14; // 剩余天数播放心跳声音，默认14
 
@@ -116,11 +116,19 @@ private:
     QSpinBox* SettingsRemainingDaysToPlayCountdownSoundSpinBox; // 设置剩余天数播放倒计时声音输入框
     QSpinBox* SettingsRemainingDaysToPlayHeartbeatSoundSpinBox; // 设置剩余天数播放心跳声音输入框
 
+    QSpinBox* SettingsSmallWindowHeightSpinBox; // 设置悬浮条高度输入框
+    QSpinBox* SettingsSmallWindowBorderRadiusSpinBox; // 设置窗口圆角输入框
+
     // PushButton
     QPushButton* WelcomeButton; // 欢迎按钮
 
+    QPushButton* SettingsReminderPreviewButton; // 全屏提醒预览按钮
+    QPushButton* SettingsCloseButton; // 设置关闭按钮
+
     // CheckBox
     QCheckBox* SettingsIsShowBigWindowCheckBox; // 设置是否显示全屏窗口复选框
+
+    QCheckBox* SettingsIsShowSmallWindowCheckBox; // 设置是否显示悬浮条复选框
 
     // RadioButton
     QRadioButton* SettingsSmallWindowPositionTopLeftRadioButton; // 设置悬浮条位置左上单选按钮
