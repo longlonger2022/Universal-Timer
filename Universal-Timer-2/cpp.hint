@@ -1,4 +1,2 @@
-// 提示文件帮助 Visual Studio IDE 解释 Visual C++ 标识符,
-// 如函数和宏的名称。
-// 有关详细信息，请参见 https://go.microsoft.com/fwlink/?linkid=865984
-#define slots
+#define Q_OBJECT public: QT_WARNING_PUSH Q_OBJECT_NO_OVERRIDE_WARNING static const QMetaObject staticMetaObject; virtual const QMetaObject *metaObject() const; virtual void *qt_metacast(const char *); virtual int qt_metacall(QMetaObject::Call, int, void **); QT_TR_FUNCTIONS private: QT_OBJECT_GADGET_COMMON QT_DEFINE_TAG_STRUCT(QPrivateSignal); QT_WARNING_POP QT_ANNOTATE_CLASS(qt_qobject, "")
+#define Q_OBJECT

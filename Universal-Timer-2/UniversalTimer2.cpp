@@ -22,6 +22,13 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     this->setAttribute(Qt::WA_TranslucentBackground); // 设置窗口背景透明
 
 
+    // Sound
+    CountdownSound = new QSoundEffect(this);
+    CountdownSound->setSource(QUrl::fromLocalFile("./sound/countdown.wav"));
+    HeartbeatSound = new QSoundEffect(this);
+    HeartbeatSound->setSource(QUrl::fromLocalFile("./sound/heartbeat.wav"));
+
+
     TrayIcon = new QSystemTrayIcon(QIcon(":/img/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
     QMenu *TrayIconMenu = new QMenu(this); // 系统托盘菜单
@@ -30,7 +37,7 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         BigWindow->show();
         FullScreenAnimationGroup->start();
         }); // 系统托盘菜单项：设置
-    TrayIconMenu->addAction(tr("刷新"), this, SLOT(readConfig())); // 系统托盘菜单项：刷新
+    TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::readConfig); // 系统托盘菜单项：刷新
     TrayIconMenu->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->setContextMenu(TrayIconMenu);
     TrayIcon->show();
@@ -98,6 +105,16 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     ReminderColorLabel->resize(desktop.width() * 0.01, ReminderRemainingLabel->height());
     ReminderColorLabel->show();
 
+    for (int i = 0; i < 4; i++) {
+        ReminderBlockLabels.append(new QLabel(BigWindowBackgroundLabel)); // 全屏提醒块标签
+        ReminderBlockLabels[i]->setStyleSheet("background: red");
+        ReminderBlockLabels[i]->hide();
+    }
+    ReminderBlockLabels[0]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.05, desktop.height() * 0.1, desktop.height() * 0.1); // 左上
+    ReminderBlockLabels[1]->setGeometry(desktop.width() - desktop.height() * 0.15, desktop.height() * 0.05, desktop.height() * 0.1, desktop.height() * 0.1); // 右上
+    ReminderBlockLabels[2]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.85, desktop.height() * 0.1, desktop.height() * 0.1); // 左下
+    ReminderBlockLabels[3]->setGeometry(desktop.width() - desktop.height() * 0.15, desktop.height() * 0.85, desktop.height() * 0.1, desktop.height() * 0.1); // 右下
+
     FullScreenAnimationLabel = new QLabel(BigWindow); // 红色全屏动画标签
     FullScreenAnimationLabel->resize(desktop.size());
     FullScreenAnimationLabel->setStyleSheet("background: red");
@@ -108,17 +125,17 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsTextAndDateGroupBox->resize(desktop.width() * 0.4, 0);
     font.setPixelSize(desktop.height() * 0.015);
     SettingsTextAndDateGroupBox->setFont(font);
-    SettingsTextAndDateGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QLabel{color: white} QLineEdit{background-color: rgba(255, 0, 0, 0.35); color: white; selection-background-color: red; border-bottom: 1px solid transparent;} QLineEdit:hover{background-color: rgba(255, 0, 0, 0.25);} QLineEdit:focus{border-bottom: 2px solid red;} QDateTimeEdit{background-color: rgba(255, 0, 0, 0.35); color: white; selection-background-color: red; border-bottom: 0px solid red;} QDateTimeEdit:hover{background-color: rgba(255, 0, 0, 0.25);} QDateTimeEdit:focus{border-bottom: 2px solid red;}");
+    SettingsTextAndDateGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px; border-radius: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QLabel{color: white}");
     SettingsTextAndDateGroupBox->show();
     SettingsReminderGroupBox = new QGroupBox(tr("全屏提醒"), SettingsUnderlyingLabel); // 设置全屏提醒分组框
     SettingsReminderGroupBox->setGeometry(SettingsTextAndDateGroupBox->width() + desktop.width() * 0.1, 0, desktop.width() * 0.4, 0);
     SettingsReminderGroupBox->setFont(font);
-    SettingsReminderGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QCheckBox {color: white;} QSpinBox{background-color: rgba(255, 0, 0, 0.35); color: white; selection-background-color: red; border-bottom: 0px solid red;} QSpinBox:hover{background-color: rgba(255, 0, 0, 0.25);} QSpinBox:focus{border-bottom: 2px solid red;} QSpinBox:disabled{color: grey};");
+    SettingsReminderGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px; border-radius: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QCheckBox {color: white;}");
     SettingsReminderGroupBox->show();
     SettingsSmallWindowGroupBox = new QGroupBox(tr("悬浮条设置"), SettingsUnderlyingLabel); // 设置悬浮条分组框
     SettingsSmallWindowGroupBox->setGeometry(0, SettingsTextAndDateGroupBox->height() + desktop.height() * 0.1, desktop.width() * 0.4, 0);
     SettingsSmallWindowGroupBox->setFont(font);
-    SettingsSmallWindowGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QRadioButton {color: white;} QCheckBox {color: white;} QSpinBox{background-color: rgba(255, 0, 0, 0.35); color: white; selection-background-color: red; border-bottom: 0px solid red;} QSpinBox:hover{background-color: rgba(255, 0, 0, 0.25);} QSpinBox:focus{border-bottom: 2px solid red;} QSpinBox:disabled{color: grey};");
+    SettingsSmallWindowGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px; border-radius: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QRadioButton {color: white;} QCheckBox {color: white;}");
     SettingsSmallWindowGroupBox->show();
 
     
@@ -190,6 +207,14 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr("天时播放心跳提醒音"));
     SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setRange(INT_MIN, INT_MAX);
     SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->show();
+
+    SettingsBlockShowTimesSpinBox = new QSpinBox(SettingsReminderGroupBox); // 方块闪烁次数
+    SettingsBlockShowTimesSpinBox->setValue(block_show_times);
+    SettingsBlockShowTimesSpinBox->setPrefix(tr("提醒音播放次数和方块闪烁次数："));
+    SettingsBlockShowTimesSpinBox->setSuffix(tr("次"));
+    SettingsBlockShowTimesSpinBox->setRange(0, USHRT_MAX);
+    SettingsBlockShowTimesSpinBox->show();
+
 
     SettingsSmallWindowHeightSpinBox = new QSpinBox(SettingsSmallWindowGroupBox); // 悬浮条高度
     SettingsSmallWindowHeightSpinBox->setValue(SmallWindow_height);
@@ -275,12 +300,13 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         });
     connect(FullScreenAnimationGroup, &QSequentialAnimationGroup::finished, [&] {
         if (!is_welcome && !is_setting) {
-            QTimer::singleShot(3000, this, [&] {BigWindowHideAnimation->start(); });
+            if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound) showBlocks();
+            else QTimer::singleShot(3000, this, [&] {BigWindowHideAnimation->start(); });
         }
         });
     connect(BigWindowHideAnimation, &QPropertyAnimation::finished, [&] {
-        BigWindow->setWindowOpacity(1);
         BigWindow->hide();
+        BigWindow->setWindowOpacity(1);
         ReminderUnderlyingLabel->hide();
         SettingsUnderlyingLabel->hide();
         });
@@ -340,6 +366,10 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(border_radius) + "px; color: red;"); // 更新悬浮条样式
         writeConfig(); // 写入配置文件
         });
+    connect(SettingsBlockShowTimesSpinBox, &QSpinBox::valueChanged, this, [&] {
+        block_show_times = SettingsBlockShowTimesSpinBox->value();
+        writeConfig(); // 写入配置文件
+        });
     connect(SettingsIsShowBigWindowCheckBox, &QCheckBox::checkStateChanged, this, [&] {
         is_show_BigWindow = SettingsIsShowBigWindowCheckBox->isChecked();
         SettingsRemainingDaysToPlayCountdownSoundSpinBox->setEnabled(is_show_BigWindow);
@@ -370,7 +400,9 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
 }
 
 UniversalTimer2::~UniversalTimer2()
-{}
+{
+    delete BigWindow;
+}
 
 // 配置文件读取函数
 void UniversalTimer2::readConfig() {
@@ -406,6 +438,9 @@ void UniversalTimer2::readConfig() {
         border_radius = settings.value("border_radius").toInt(); // 窗口圆角
         SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(border_radius) + "px; color: red;"); // 更新悬浮条样式
         SettingsSmallWindowBorderRadiusSpinBox->setValue(border_radius);
+
+        block_show_times = settings.value("block_show_times").toInt(); // 倒计时显示次数
+        SettingsBlockShowTimesSpinBox->setValue(block_show_times);
 
         targetDateTime = QDateTime::fromString(settings.value("targetDateTime").toString(), "yyyy-MM-dd hh:mm:ss"); // 目标时间
         if (!targetDateTime.isValid()) {
@@ -499,6 +534,7 @@ void UniversalTimer2::writeConfig() {
     settings.setValue("BigWindow_small_text", BigWindow_small_text);
     settings.setValue("remaining_days_to_play_countdown_sound", remaining_days_to_play_countdown_sound);
     settings.setValue("remaining_days_to_play_heartbeat_sound", remaining_days_to_play_heartbeat_sound);
+    settings.setValue("block_show_times", block_show_times);
     settings.setValue("update_interval", update_interval);
     settings.sync();
     if (settings.status() != QSettings::NoError) {
@@ -605,6 +641,28 @@ void UniversalTimer2::adjustReminderSize(qreal scale) {
     }
 }
 
+void UniversalTimer2::showBlocks(unsigned short times) {
+    if ((timeLeft / 86400) <= remaining_days_to_play_heartbeat_sound) {
+        CountdownSound->play();
+        if(times % 2) HeartbeatSound->play();
+    }
+    else if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound) CountdownSound->play();
+    for (int i = 0; i < ReminderBlockLabels.size(); i++) {
+        ReminderBlockLabels[i]->show();
+    }
+    QTimer::singleShot(500, this, [=] {
+        for (int i = 0; i < ReminderBlockLabels.size(); i++) {
+            ReminderBlockLabels[i]->hide();
+        }
+        QTimer::singleShot(500, this, [=] {
+            if (times < block_show_times) {
+                showBlocks(times + 1);
+            }
+            else BigWindowHideAnimation->start();
+            });
+        });
+}
+
 // 更新控件
 void UniversalTimer2::updateObjects() {
     currentDateTime = QDateTime::currentDateTime();
@@ -658,8 +716,10 @@ void UniversalTimer2::updateObjects() {
         SettingsRemainingDaysToPlayCountdownSoundSpinBox->setGeometry(SettingsIsShowBigWindowCheckBox->x(), SettingsIsShowBigWindowCheckBox->y() + SettingsIsShowBigWindowCheckBox->height(), SettingsReminderGroupBox->width(), SettingsRemainingDaysToPlayCountdownSoundSpinBox->height());
         SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->adjustSize();
         SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setGeometry(SettingsRemainingDaysToPlayCountdownSoundSpinBox->x(), SettingsRemainingDaysToPlayCountdownSoundSpinBox->y() + SettingsRemainingDaysToPlayCountdownSoundSpinBox->height(), SettingsReminderGroupBox->width(), SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->height());
+        SettingsBlockShowTimesSpinBox->adjustSize();
+        SettingsBlockShowTimesSpinBox->setGeometry(SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->x(), SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->y() + SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->height(), SettingsReminderGroupBox->width(), SettingsBlockShowTimesSpinBox->height());
         SettingsReminderPreviewButton->adjustSize();
-        SettingsReminderPreviewButton->setGeometry(SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->x(), SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->y() + SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->height(), SettingsReminderGroupBox->width(), SettingsReminderPreviewButton->height());
+        SettingsReminderPreviewButton->setGeometry(SettingsBlockShowTimesSpinBox->x(), SettingsBlockShowTimesSpinBox->y() + SettingsBlockShowTimesSpinBox->height(), SettingsReminderGroupBox->width(), SettingsReminderPreviewButton->height());
         SettingsReminderGroupBox->resize(SettingsReminderGroupBox->width(), SettingsReminderPreviewButton->y() + SettingsReminderPreviewButton->height());
         SettingsReminderGroupBox->move(SettingsTextAndDateGroupBox->x() + SettingsTextAndDateGroupBox->width() + desktop.width() * 0.1, SettingsTextAndDateGroupBox->y());
 

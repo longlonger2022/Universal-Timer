@@ -15,6 +15,7 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QSoundEffect>
 #include <QDateTime>
 #include <QTimer>
 
@@ -26,7 +27,10 @@ public:
     UniversalTimer2(QWidget *parent = nullptr);
     ~UniversalTimer2();
 
-private slots:
+private:
+    Ui::UniversalTimer2Class ui;
+
+
     void readConfig(); // 读取配置
     void writeConfig(); // 写入配置
     void readTimeList(); // 读取时间列表
@@ -35,9 +39,8 @@ private slots:
     void showBigWindow(); // 显示全屏窗口
     void updateObjects(); // 更新对象
     void adjustReminderSize(qreal scale); // 调整全屏提醒大小
+    void showBlocks(unsigned short times = 1); // 显示红色块
 
-private:
-    Ui::UniversalTimer2Class ui;
 
     bool is_show_BigWindow = true; // 是否显示全屏窗口，默认显示
     bool is_show_SmallWindow = true; // 是否显示悬浮条，默认显示
@@ -61,6 +64,8 @@ private:
 
     unsigned short update_interval = 1000; // 更新间隔时间，默认1秒
 
+    unsigned short block_show_times = 4; // 红色块显示次数，默认4
+
     QString SmallWindow_text = "距会考还剩："; // 悬浮条文本
     QString BigWindow_text = "距会考"; // 全屏窗口文本
     QString BigWindow_small_text = "THE EXAM IN "; // 全屏窗口小文本
@@ -68,6 +73,10 @@ private:
     unsigned short SmallWindow_position = 1; // 悬浮条位置，0为左上，1为中上，2为右上
 
     QList<QTime> timeList = { QTime(8, 13), QTime(9, 3), QTime(9, 53), QTime(10, 43), QTime(11, 38), QTime(14, 20), QTime(15, 23), QTime(16, 13), QTime(17, 3), QTime(18, 6) }; // 时间列表
+
+    // Sound
+    QSoundEffect* CountdownSound; // 倒计时声音
+    QSoundEffect* HeartbeatSound; // 心跳声音
 
     // SystemTrayIcon
     QSystemTrayIcon* TrayIcon; // 系统托盘图标
@@ -104,6 +113,8 @@ private:
     QLabel* ReminderSmallTextLabel; // 全屏提醒自定义小文本标签
     QLabel* ReminderColorLabel; // 全屏提醒颜色标签
 
+    QList<QLabel*> ReminderBlockLabels; // 全屏提醒红色块标签列表
+
     // LineEdit
     QLineEdit* SettingsSmallWindowTextLineEdit; // 设置悬浮条文本输入框
     QLineEdit* SettingsBigWindowTextLineEdit; // 设置全屏窗口文本输入框
@@ -115,6 +126,7 @@ private:
     // SpinBox
     QSpinBox* SettingsRemainingDaysToPlayCountdownSoundSpinBox; // 设置剩余天数播放倒计时声音输入框
     QSpinBox* SettingsRemainingDaysToPlayHeartbeatSoundSpinBox; // 设置剩余天数播放心跳声音输入框
+    QSpinBox* SettingsBlockShowTimesSpinBox; // 设置红色块显示次数输入框
 
     QSpinBox* SettingsSmallWindowHeightSpinBox; // 设置悬浮条高度输入框
     QSpinBox* SettingsSmallWindowBorderRadiusSpinBox; // 设置窗口圆角输入框
