@@ -2,12 +2,12 @@
 
 ![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)
 ![Qt](https://img.shields.io/badge/Qt-6.10.1-green.svg)
-![Version](https://img.shields.io/badge/version-2.0.0--beta.3-orange)
+![Version](https://img.shields.io/badge/version-2.0.0--beta.4-orange)
 
-**Universal-Timer** (formerly known as UniversalTimer2) is a powerful and customizable countdown application built with Qt. It helps you track important events by displaying the remaining time in a floating bar and providing full-screen reminders with animations and sounds. This is the **2.0.0-beta.3** release, completely rewritten from the 1.x series, offering more features and better performance than its predecessor.
+**Universal-Timer** (formerly known as UniversalTimer2) is a powerful and customizable countdown application built with Qt. It helps you track important events by displaying the remaining time in a floating bar and providing full-screen reminders with animations and sounds. This is the **2.0.0-beta.4** release, completely rewritten from the 1.x series, offering more features and better performance than its predecessor.
 
 
-**万能倒计时**（原项目名 UniversalTimer2）是一个基于 Qt 的强大且可定制的倒计时应用程序。它通过在悬浮条中显示剩余时间，并提供带有动画和音效的全屏提醒，帮助您追踪重要事件。这是 **2.0.0-beta.3** 版本，完全由 1.x 系列重写而来，将具有比 1.x 更多的功能和更好的性能。
+**万能倒计时**（原项目名 UniversalTimer2）是一个基于 Qt 的强大且可定制的倒计时应用程序。它通过在悬浮条中显示剩余时间，并提供带有动画和音效的全屏提醒，帮助您追踪重要事件。这是 **2.0.0-beta.4** 版本，完全由 1.x 系列重写而来，将具有比 1.x 更多的功能和更好的性能。
 
 ---
 
