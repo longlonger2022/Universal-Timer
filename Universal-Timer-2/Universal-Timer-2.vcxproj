@@ -108,7 +108,7 @@
     <Image Include="Universal-Timer-2_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <QtTranslation Include="Translation_en.ts" />
+    <QtTranslation Include="lang\translation\translation_en.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

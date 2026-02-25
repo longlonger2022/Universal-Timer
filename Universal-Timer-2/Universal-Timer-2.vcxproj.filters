@@ -57,7 +57,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <QtTranslation Include="Translation_en.ts">
+    <QtTranslation Include="lang\translation\translation_en.ts">
       <Filter>Translation Files</Filter>
     </QtTranslation>
   </ItemGroup>

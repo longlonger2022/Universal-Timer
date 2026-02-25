@@ -15,6 +15,8 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QComboBox>
+#include <QTranslator>
 #include <QSoundEffect>
 #include <QDateTime>
 #include <QTimer>
@@ -35,10 +37,13 @@ private:
     void writeConfig(); // 写入配置
     void readTimeList(); // 读取时间列表
     void writeTimeList(); // 写入时间列表
+    void scanLanguage(); // 扫描语言
+    void changeLanguage(); // 切换语言
     void writeLog(QString type, QString log); // 写入日志
     void showBigWindow(); // 显示全屏窗口
     void updateObjects(); // 更新对象
-    void adjustReminderSize(qreal scale); // 调整全屏提醒大小
+    void updateText(); // 更新文本
+    void adjustReminderSize(const qreal scale); // 调整全屏提醒大小
     void showBlocks(unsigned short times = 1); // 显示红色块
 
 
@@ -72,6 +77,410 @@ private:
 
     unsigned short SmallWindow_position = 1; // 悬浮条位置，0为左上，1为中上，2为右上
 
+    QString language = "zh-CN"; // 语言，默认中文
+
+    QTranslator* Translator; // 翻译器
+
+    QStringList LanguageCodeList = {
+    "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az",
+    "ba", "be", "bg", "bh", "bi", "bm", "bn", "bo", "br", "bs", "ca", "ce",
+    "ch", "co", "cr", "cs", "cu", "cv", "cy", "da", "de", "dv", "dz", "ee",
+    "el", "en", "eo", "es", "et", "eu", "fa", "ff", "fi", "fj", "fo", "fr",
+    "fy", "ga", "gd", "gl", "gn", "gu", "gv", "ha", "he", "hi", "ho", "hr",
+    "ht", "hu", "hy", "hz", "ia", "id", "ie", "ig", "ii", "ik", "io", "is",
+    "it", "iu", "ja", "jv", "ka", "kg", "ki", "kj", "kk", "kl", "km", "kn",
+    "ko", "kr", "ks", "ku", "kv", "kw", "ky", "la", "lb", "lg", "li", "ln",
+    "lo", "lt", "lu", "lv", "mg", "mh", "mi", "mk", "ml", "mn", "mo", "mr",
+    "ms", "mt", "my", "na", "nb", "nd", "ne", "ng", "nl", "nn", "no", "nr",
+    "nv", "ny", "oc", "oj", "om", "or", "os", "pa", "pi", "pl", "ps", "pt",
+    "qu", "rm", "rn", "ro", "ru", "rw", "sa", "sc", "sd", "se", "sg", "sh",
+    "si", "sk", "sl", "sm", "sn", "so", "sq", "sr", "ss", "st", "su", "sv",
+    "sw", "ta", "te", "tg", "th", "ti", "tk", "tl", "tn", "to", "tr", "ts",
+    "tt", "tw", "ty", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "wa", "wo",
+    "xh", "yi", "yo", "za", "zh-CN", "zh-HK", "zh-TW", "zh-Classic-Hans", "zh-Classic-Hant", "zu"
+    }; // 语言代码列表（大部分为ISO 639-1）
+    QStringList LanguageNameList = {
+        // aa
+        "Afaraf",
+        // ab
+        "аҧсуа бызшәа",
+        // ae
+        "avesta",
+        // af
+        "Afrikaans",
+        // ak
+        "Akan",
+        // am
+        "አማርኛ",
+        // an
+        "aragonés",
+        // ar
+        "العربية",
+        // as
+        "অসমীয়া",
+        // av
+        "авар мацӀ",
+        // ay
+        "aymar aru",
+        // az
+        "azərbaycan dili",
+        // ba
+        "башҡорт теле",
+        // be
+        "беларуская мова",
+        // bg
+        "български език",
+        // bh
+        "भोजपुरी",
+        // bi
+        "Bislama",
+        // bm
+        "bamanankan",
+        // bn
+        "বাংলা",
+        // bo
+        "བོད་ཡིག",
+        // br
+        "brezhoneg",
+        // bs
+        "bosanski jezik",
+        // ca
+        "Català",
+        // ce
+        "нохчийн мотт",
+        // ch
+        "Chamoru",
+        // co
+        "corsu",
+        // cr
+        "ᓀᐦᐃᔭᐍᐏᐣ",
+        // cs
+        "čeština",
+        // cu
+        "ѩзыкъ словѣньскъ",
+        // cv
+        "чӑваш чӗлхи",
+        // cy
+        "Cymraeg",
+        // da
+        "dansk",
+        // de
+        "Deutsch",
+        // dv
+        "Dhivehi",
+        // dz
+        "རྫོང་ཁ",
+        // ee
+        "Eʋegbe",
+        // el
+        "Ελληνικά",
+        // en
+        "English",
+        // eo
+        "Esperanto",
+        // es
+        "Español",
+        // et
+        "eesti",
+        // eu
+        "euskara",
+        // fa
+        "فارسی",
+        // ff
+        "Fulfulde",
+        // fi
+        "suomi",
+        // fj
+        "Vakaviti",
+        // fo
+        "føroyskt",
+        // fr
+        "Français",
+        // fy
+        "Frysk",
+        // ga
+        "Gaeilge",
+        // gd
+        "Gàidhlig",
+        // gl
+        "galego",
+        // gn
+        "avañe'ẽ",
+        // gu
+        "ગુજરાતી",
+        // gv
+        "Gaelg",
+        // ha
+        "هَوُسَ",
+        // he
+        "עברית",
+        // hi
+        "हिन्दी",
+        // ho
+        "Hiri Motu",
+        // hr
+        "Hrvatski",
+        // ht
+        "Kreyòl ayisyen",
+        // hu
+        "magyar",
+        // hy
+        "Հայերեն",
+        // hz
+        "Otjiherero",
+        // ia
+        "Interlingua",
+        // id
+        "Bahasa Indonesia",
+        // ie
+        "Interlingue",
+        // ig
+        "Asụsụ Igbo",
+        // ii
+        "ꆈꌠ꒿ Nuosuhxop",
+        // ik
+        "Iñupiaq",
+        // io
+        "Ido",
+        // is
+        "Íslenska",
+        // it
+        "Italiano",
+        // iu
+        "ᐃᓄᒃᑎᑐᑦ",
+        // ja
+        "日本語",
+        // jv
+        "basa Jawa",
+        // ka
+        "ქართული",
+        // kg
+        "Kikongo",
+        // ki
+        "Gĩkũyũ",
+        // kj
+        "Kuanyama",
+        // kk
+        "қазақ тілі",
+        // kl
+        "kalaallisut",
+        // km
+        "ខេមរភាសា",
+        // kn
+        "ಕನ್ನಡ",
+        // ko
+        "한국어",
+        // kr
+        "Kanuri",
+        // ks
+        "कश्मीरी",
+        // ku
+        "Kurdî",
+        // kv
+        "коми кыв",
+        // kw
+        "Kernewek",
+        // ky
+        "Кыргызча",
+        // la
+        "latine",
+        // lb
+        "Lëtzebuergesch",
+        // lg
+        "Luganda",
+        // li
+        "Limburgs",
+        // ln
+        "Lingála",
+        // lo
+        "ພາສາ",
+        // lt
+        "lietuvių kalba",
+        // lu
+        "Tshiluba",
+        // lv
+        "latviešu valoda",
+        // mg
+        "fiteny malagasy",
+        // mh
+        "Kajin M̧ajeļ",
+        // mi
+        "te reo Māori",
+        // mk
+        "македонски јазик",
+        // ml
+        "മലയാളം",
+        // mn
+        "Монгол хэл",
+        // mo
+        "Лимба молдовеняскэ",
+        // mr
+        "मराठी",
+        // ms
+        "Bahasa Malaysia",
+        // mt
+        "Malti",
+        // my
+        "ဗမာစာ",
+        // na
+        "Ekakairũ Naoero",
+        // nb
+        "Norsk bokmål",
+        // nd
+        "isiNdebele",
+        // ne
+        "नेपाली",
+        // ng
+        "Owambo",
+        // nl
+        "Nederlands",
+        // nn
+        "Norsk nynorsk",
+        // no
+        "Norsk",
+        // nr
+        "isiNdebele",
+        // nv
+        "Diné bizaad",
+        // ny
+        "chiCheŵa",
+        // oc
+        "occitan",
+        // oj
+        "ᐊᓂᔑᓈᐯᒧᐎᓐ",
+        // om
+        "Afaan Oromoo",
+        // or
+        "ଓଡ଼ିଆ",
+        // os
+        "ирон æвзаг",
+        // pa
+        "ਪੰਜਾਬੀ",
+        // pi
+        "पाऴि",
+        // pl
+        "Polski",
+        // ps
+        "پښتو",
+        // pt
+        "Português",
+        // qu
+        "Runa Simi",
+        // rm
+        "rumantsch grischun",
+        // rn
+        "Ikirundi",
+        // ro
+        "Română",
+        // ru
+        "Русский",
+        // rw
+        "Ikinyarwanda",
+        // sa
+        "संस्कृतम्",
+        // sc
+        "sardu",
+        // sd
+        "सिन्धी",
+        // se
+        "Davvisámegiella",
+        // sg
+        "yângâ tî sängö",
+        // sh
+        "Српскохрватски језик",
+        // si
+        "සිංහල",
+        // sk
+        "slovenčina",
+        // sl
+        "slovenščina",
+        // sm
+        "Gagana Samoa",
+        // sn
+        "chiShona",
+        // so
+        "Soomaaliga",
+        // sq
+        "Shqip",
+        // sr
+        "српски језик",
+        // ss
+        "SiSwati",
+        // st
+        "Sesotho",
+        // su
+        "Basa Sunda",
+        // sv
+        "Svenska",
+        // sw
+        "Kiswahili",
+        // ta
+        "தமிழ்",
+        // te
+        "తెలుగు",
+        // tg
+        "тоҷикӣ",
+        // th
+        "ไทย",
+        // ti
+        "ትግርኛ",
+        // tk
+        "Türkmen",
+        // tl
+        "Wikang Tagalog",
+        // tn
+        "Setswana",
+        // to
+        "faka Tonga",
+        // tr
+        "Türkçe",
+        // ts
+        "Xitsonga",
+        // tt
+        "татар теле",
+        // tw
+        "Twi",
+        // ty
+        "Reo Tahiti",
+        // ug
+        "ئۇيغۇرچە‎",
+        // uk
+        "Українська",
+        // ur
+        "اردو",
+        // uz
+        "Ўзбек",
+        // ve
+        "Tshivenḓa",
+        // vi
+        "Tiếng Việt",
+        // vo
+        "Volapük",
+        // wa
+        "walon",
+        // wo
+        "Wollof",
+        // xh
+        "isiXhosa",
+        // yi
+        "ייִדיש",
+        // yo
+        "Yorùbá",
+        // za
+        "Saɯ cueŋƅ",
+        // zh-CN
+        "简体中文（中国大陆）",
+        // zh-HK
+        "繁體中文（香港）",
+        // zh-TW
+        "繁體中文（臺灣）",
+        // zh-Classic-Hans
+        "文言（简体）",
+        // zh-Classic-Hant
+        "文言（華夏）",
+        // zu
+        "isiZulu"
+    };
     QList<QTime> timeList = { QTime(8, 13), QTime(9, 3), QTime(9, 53), QTime(10, 43), QTime(11, 38), QTime(14, 20), QTime(15, 23), QTime(16, 13), QTime(17, 3), QTime(18, 6) }; // 时间列表
 
     // Sound
@@ -122,6 +531,9 @@ private:
 
     // DateTimeEdit
     QDateTimeEdit* SettingsTargetDateTimeEdit; // 设置目标时间输入框
+
+    // ComboBox
+    QComboBox* SettingsLanguageComboBox; // 设置语言下拉框
 
     // SpinBox
     QSpinBox* SettingsRemainingDaysToPlayCountdownSoundSpinBox; // 设置剩余天数播放倒计时声音输入框
