@@ -133,9 +133,3 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 - Author / 作者: 龙ger_longer
 - GitHub: [@longlonger2022](https://github.com/longlonger2022)
-
----
-
-*Coming soon...*
-
-*即将推出……*
