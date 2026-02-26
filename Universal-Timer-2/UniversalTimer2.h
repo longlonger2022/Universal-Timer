@@ -32,18 +32,35 @@ public:
 private:
     Ui::UniversalTimer2Class ui;
 
-
+    
+    // 函数声明
+    // 配置
     void readConfig(); // 读取配置
     void writeConfig(); // 写入配置
+
+    // 时间列表
     void readTimeList(); // 读取时间列表
     void writeTimeList(); // 写入时间列表
+
+    // 语言
     void scanLanguage(); // 扫描语言
     void changeLanguage(); // 切换语言
+
+    // 日志
     void writeLog(QString type, QString log); // 写入日志
+
+    // 全屏窗口
     void showBigWindow(); // 显示全屏窗口
+
+    // 更新
+    void updateFloatingBar(); // 更新悬浮条
+    void updateReminder(); // 更新全屏提醒
+    void updateSettings(); // 更新设置界面
     void updateObjects(); // 更新对象
     void updateText(); // 更新文本
     void adjustReminderSize(const qreal scale); // 调整全屏提醒大小
+
+    // 闪烁
     void showBlocks(unsigned short times = 1); // 显示红色块
 
 
@@ -471,9 +488,9 @@ private:
         // zh-CN
         "简体中文（中国大陆）",
         // zh-HK
-        "繁體中文（香港）",
+        "繁體中文（中國香港）",
         // zh-TW
-        "繁體中文（臺灣）",
+        "繁體中文（中國臺灣）",
         // zh-Classic-Hans
         "文言（简体）",
         // zh-Classic-Hant

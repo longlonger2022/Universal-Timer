@@ -60,5 +60,11 @@
     <QtTranslation Include="lang\translation\translation_en.ts">
       <Filter>Translation Files</Filter>
     </QtTranslation>
+    <QtTranslation Include="lang\translation\translation_zh-Classic-Hant.ts">
+      <Filter>Translation Files</Filter>
+    </QtTranslation>
+    <QtTranslation Include="lang\translation\translation_zh-Classic-Hans.ts">
+      <Filter>Translation Files</Filter>
+    </QtTranslation>
   </ItemGroup>
 </Project>
