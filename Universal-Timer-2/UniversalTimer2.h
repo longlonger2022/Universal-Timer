@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_UniversalTimer2.h"
+#include <numbers>
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
@@ -20,6 +21,8 @@
 #include <QSoundEffect>
 #include <QDateTime>
 #include <QTimer>
+
+inline static constexpr double GOLDEN_RATIO_INV = 1.0 / std::numbers::phi; // 黄金比例倒数
 
 class UniversalTimer2 : public QWidget
 {
@@ -50,7 +53,7 @@ private:
     void writeLog(QString type, QString log); // 写入日志
 
     // 全屏窗口
-    void showBigWindow(); // 显示全屏窗口
+    void showReminder(); // 显示全屏窗口
 
     // 更新
     void updateFloatingBar(); // 更新悬浮条
@@ -64,12 +67,27 @@ private:
     void showBlocks(unsigned short times = 1); // 显示红色块
 
 
-    bool is_show_BigWindow = true; // 是否显示全屏窗口，默认显示
+    // 强枚举
+    // 全屏窗口模式
+    enum class FullScreenWidgetMode {
+        None,
+        Welcome,
+        Settings,
+        Reminder
+    };
+    FullScreenWidgetMode FullScreenWidget_mode = FullScreenWidgetMode::None; // 全屏窗口模式，默认无
+
+    // 悬浮条位置
+    enum class FloatingBarPosition {
+        TopLeft,
+        TopCenter,
+        TopRight
+    };
+    FloatingBarPosition floating_bar_position = FloatingBarPosition::TopCenter; // 悬浮条位置，默认居中
+
+    bool is_show_reminder = true; // 是否显示全屏窗口，默认显示
     bool is_show_SmallWindow = true; // 是否显示悬浮条，默认显示
     bool SmallWindow_on_top = true; // 悬浮条是否置顶，默认置顶
-
-    bool is_setting = false; // 是否在设置界面，默认不在
-    bool is_welcome = false; // 是否在欢迎界面，默认在
 
     int border_radius = 10; // 窗口圆角，默认10
     unsigned short SmallWindow_height = 50; // 悬浮条高度，默认50
@@ -89,10 +107,8 @@ private:
     unsigned short block_show_times = 4; // 红色块显示次数，默认4
 
     QString SmallWindow_text = "距会考还剩："; // 悬浮条文本
-    QString BigWindow_text = "距会考"; // 全屏窗口文本
-    QString BigWindow_small_text = "THE EXAM IN "; // 全屏窗口小文本
-
-    unsigned short SmallWindow_position = 1; // 悬浮条位置，0为左上，1为中上，2为右上
+    QString reminder_text = "距会考"; // 全屏窗口文本
+    QString reminder_small_text = "THE EXAM IN "; // 全屏窗口小文本
 
     QString language = "zh-CN"; // 语言，默认中文
 
@@ -508,7 +524,7 @@ private:
     QSystemTrayIcon* TrayIcon; // 系统托盘图标
 
     // Widget
-    QWidget* BigWindow; // 全屏窗口
+    QWidget* FullScreenWidget; // 全屏窗口
 
     // GroupBox
     QGroupBox* SettingsTextAndDateGroupBox; // 文本和时间设置分组框
@@ -523,12 +539,12 @@ private:
     QLabel* WelcomeLabel; // 欢迎标签
     QLabel* SmallWindowLabel; // 悬浮条背景标签
     QLabel* FullScreenAnimationLabel; // 红色全屏动画标签
-    QLabel* BigWindowBackgroundLabel; // 全屏窗口背景标签
+    QLabel* FullScreenWidgetBackgroundLabel; // 全屏窗口背景标签
 
     QLabel* SettingsUnderlyingLabel; // 设置背景标签
     QLabel* SettingsSmallWindowTextLabel; // 设置悬浮条文本标签
-    QLabel* SettingsBigWindowTextLabel; // 设置全屏窗口文本标签
-    QLabel* SettingsBigWindowSmallTextLabel; // 设置全屏窗口小文本标签
+    QLabel* SettingsReminderTextLabel; // 设置全屏窗口文本标签
+    QLabel* SettingsReminderSmallTextLabel; // 设置全屏窗口小文本标签
     QLabel* SettingsTargetDateTimeLabel; // 设置目标时间标签
 
     QLabel* ReminderUnderlyingLabel; // 全屏提醒背景标签
@@ -543,8 +559,8 @@ private:
 
     // LineEdit
     QLineEdit* SettingsSmallWindowTextLineEdit; // 设置悬浮条文本输入框
-    QLineEdit* SettingsBigWindowTextLineEdit; // 设置全屏窗口文本输入框
-    QLineEdit* SettingsBigWindowSmallTextLineEdit; // 设置全屏窗口小文本输入框
+    QLineEdit* SettingsReminderTextLineEdit; // 设置全屏窗口文本输入框
+    QLineEdit* SettingsReminderSmallTextLineEdit; // 设置全屏窗口小文本输入框
 
     // DateTimeEdit
     QDateTimeEdit* SettingsTargetDateTimeEdit; // 设置目标时间输入框
@@ -567,7 +583,7 @@ private:
     QPushButton* SettingsCloseButton; // 设置关闭按钮
 
     // CheckBox
-    QCheckBox* SettingsIsShowBigWindowCheckBox; // 设置是否显示全屏窗口复选框
+    QCheckBox* SettingsIsShowReminderCheckBox; // 设置是否显示全屏窗口复选框
 
     QCheckBox* SettingsIsShowSmallWindowCheckBox; // 设置是否显示悬浮条复选框
 
@@ -586,7 +602,7 @@ private:
     QPropertyAnimation* FullScreenAnimation1; // 红色全屏动画前段
     QPropertyAnimation* FullScreenAnimation2; // 红色全屏动画后段
 
-    QPropertyAnimation* BigWindowHideAnimation; // 全屏窗口隐藏动画
+    QPropertyAnimation* FullScreenWidgetHideAnimation; // 全屏窗口隐藏动画
 
     // Animation Group
     QSequentialAnimationGroup* FullScreenAnimationGroup; // 红色全屏动画组
