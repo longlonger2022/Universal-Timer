@@ -1,33 +1,27 @@
 ﻿#include "UniversalTimer2.h"
-#include <QScreen>
-#include <QMenu>
-#include <QSettings>
+#include <QGuiApplication>
 #include <QFile>
+#include <QMenu>
+#include <QScreen>
+#include <QSettings>
 
 UniversalTimer2::UniversalTimer2(QWidget *parent)
-    : QWidget(parent)
-{
-    ui.setupUi(this);
-
-
-    desktop = QApplication::primaryScreen()->geometry(); // 获取屏幕分辨率
+    : QWidget(parent) {
+    desktop = QGuiApplication::primaryScreen()->geometry(); // 获取屏幕分辨率
 
     currentDateTime = QDateTime::currentDateTime(); // 获取当前时间
 
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool); // 无边框窗口
-    this->setAttribute(Qt::WA_TranslucentBackground); // 设置窗口背景透明
-
+    this->setAttribute(Qt::WA_TranslucentBackground);                                    // 设置窗口背景透明
 
     // Translator
     Translator = new QTranslator(this);
-
 
     // Sound
     CountdownSound = new QSoundEffect(this);
     CountdownSound->setSource(QUrl::fromLocalFile("./sound/countdown.wav"));
     HeartbeatSound = new QSoundEffect(this);
     HeartbeatSound->setSource(QUrl::fromLocalFile("./sound/heartbeat.wav"));
-
 
     TrayIcon = new QSystemTrayIcon(QIcon(":/img/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
@@ -36,12 +30,11 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         FullScreenWidget_mode = FullScreenWidgetMode::Settings;
         FullScreenWidget->show();
         FullScreenAnimationGroup->start();
-        }); // 系统托盘菜单项：设置
+    });                                                                      // 系统托盘菜单项：设置
     TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::readConfig); // 系统托盘菜单项：刷新
-    TrayIconMenu->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
+    TrayIconMenu->addAction(tr("退出"), this, &qApp->quit);                  // 系统托盘菜单项：退出
     TrayIcon->setContextMenu(TrayIconMenu);
     TrayIcon->show();
-
 
     // Widget
     FullScreenWidget = new QWidget; // 全屏窗口
@@ -49,7 +42,6 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     FullScreenWidget->setAttribute(Qt::WA_TranslucentBackground);
     FullScreenWidget->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     FullScreenWidget->setWindowState(Qt::WindowFullScreen); // 全屏
-
 
     // Label
     SmallWindowLabel = new QLabel(this); // 悬浮条标签
@@ -111,17 +103,14 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         ReminderBlockLabels[i]->setStyleSheet("background: red");
         ReminderBlockLabels[i]->hide();
     }
-    ReminderBlockLabels[0]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.05, desktop.height() * 0.1, desktop.height() * 0.1); // 左上
+    ReminderBlockLabels[0]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.05, desktop.height() * 0.1, desktop.height() * 0.1);                   // 左上
     ReminderBlockLabels[1]->setGeometry(desktop.width() - desktop.height() * 0.15, desktop.height() * 0.05, desktop.height() * 0.1, desktop.height() * 0.1); // 右上
-    ReminderBlockLabels[2]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.85, desktop.height() * 0.1, desktop.height() * 0.1); // 左下
+    ReminderBlockLabels[2]->setGeometry(desktop.height() * 0.05, desktop.height() * 0.85, desktop.height() * 0.1, desktop.height() * 0.1);                   // 左下
     ReminderBlockLabels[3]->setGeometry(desktop.width() - desktop.height() * 0.15, desktop.height() * 0.85, desktop.height() * 0.1, desktop.height() * 0.1); // 右下
 
     FullScreenAnimationLabel = new QLabel(FullScreenWidget); // 红色全屏动画标签
     FullScreenAnimationLabel->resize(desktop.size());
     FullScreenAnimationLabel->setStyleSheet("background: red");
-
-
-
 
     // GroupBox
     SettingsTextAndDateGroupBox = new QGroupBox(SettingsUnderlyingLabel); // 设置文本和日期分组框
@@ -141,13 +130,11 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsSmallWindowGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px; border-radius: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QRadioButton {color: white;} QCheckBox {color: white;}");
     SettingsSmallWindowGroupBox->show();
 
-    
     // ButtonGroup
     SettingsSmallWindowLevelButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
     SettingsSmallWindowLevelButtonGroup->setExclusive(true);
     SettingsSmallWindowPositionButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
     SettingsSmallWindowPositionButtonGroup->setExclusive(true);
-    
 
     // Label in GroupBox
     SettingsSmallWindowTextLabel = new QLabel(SettingsTextAndDateGroupBox); // 悬浮条文本标签
@@ -164,13 +151,11 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsTargetDateTimeLabel->setFont(font);
     SettingsTargetDateTimeLabel->show();
 
-    
     // PushButton in GroupBox
     SettingsReminderPreviewButton = new QPushButton(SettingsReminderGroupBox); // 全屏提醒预览按钮
     SettingsReminderPreviewButton->show();
     SettingsCloseButton = new QPushButton(SettingsUnderlyingLabel); // 设置关闭按钮
     SettingsCloseButton->show();
-
 
     // LineEdit in GroupBox
     SettingsSmallWindowTextLineEdit = new QLineEdit(SmallWindow_text, SettingsTextAndDateGroupBox); // 悬浮条文本输入框
@@ -199,7 +184,6 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsIsShowSmallWindowCheckBox->setChecked(is_show_SmallWindow);
     SettingsIsShowSmallWindowCheckBox->show();
 
-
     // ComboBox
     SettingsLanguageComboBox = new QComboBox(SettingsTextAndDateGroupBox); // 设置语言下拉框
     SettingsLanguageComboBox->setFont(font);
@@ -222,7 +206,6 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsBlockShowTimesSpinBox->setRange(0, USHRT_MAX);
     SettingsBlockShowTimesSpinBox->setFont(font);
     SettingsBlockShowTimesSpinBox->show();
-
 
     SettingsSmallWindowHeightSpinBox = new QSpinBox(SettingsSmallWindowGroupBox); // 悬浮条高度
     SettingsSmallWindowHeightSpinBox->setValue(SmallWindow_height);
@@ -263,7 +246,6 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsSmallWindowPositionButtonGroup->addButton(SettingsSmallWindowPositionTopCenterRadioButton);
     SettingsSmallWindowPositionButtonGroup->addButton(SettingsSmallWindowPositionTopRightRadioButton);
 
-
     // Animation
     FullScreenAnimation1 = new QPropertyAnimation(FullScreenAnimationLabel, "pos"); // 红色全屏动画前段
     FullScreenAnimation1->setDuration(250);
@@ -281,14 +263,13 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     FullScreenWidgetHideAnimation->setEndValue(0);
     FullScreenWidgetHideAnimation->setEasingCurve(QEasingCurve::InCubic);
 
-
     // Animation Group
     FullScreenAnimationGroup = new QSequentialAnimationGroup(FullScreenAnimationLabel); // 红色全屏动画组
     FullScreenAnimationGroup->addAnimation(FullScreenAnimation1);
     FullScreenAnimationGroup->addAnimation(FullScreenAnimation2);
 
     readConfig(); // 读取配置文件
-    
+
     // connection
     Timer = new QTimer(this); // 定时器
     connect(Timer, &QTimer::timeout, this, &UniversalTimer2::updateObjects);
@@ -298,65 +279,65 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         if (FullScreenWidget_mode == FullScreenWidgetMode::Welcome) {
             ReminderUnderlyingLabel->hide();
             SettingsUnderlyingLabel->hide();
-        }
-        else if (FullScreenWidget_mode == FullScreenWidgetMode::Reminder) {
+        } else if (FullScreenWidget_mode == FullScreenWidgetMode::Reminder) {
             updateReminder();
             ReminderUnderlyingLabel->show();
             SettingsUnderlyingLabel->hide();
-        }
-        else if (FullScreenWidget_mode == FullScreenWidgetMode::Settings) {
+        } else if (FullScreenWidget_mode == FullScreenWidgetMode::Settings) {
             updateSettings();
             ReminderUnderlyingLabel->hide();
             SettingsUnderlyingLabel->show();
         }
-        });
+    });
     connect(FullScreenAnimationGroup, &QSequentialAnimationGroup::finished, [&] {
         if (FullScreenWidget_mode == FullScreenWidgetMode::Reminder) {
-            if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound) showBlocks();
-            else QTimer::singleShot(3000, this, [&] {FullScreenWidgetHideAnimation->start(); });
+            if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound)
+                showBlocks();
+            else
+                QTimer::singleShot(3000, this, [&] { FullScreenWidgetHideAnimation->start(); });
         }
-        });
+    });
     connect(FullScreenWidgetHideAnimation, &QPropertyAnimation::finished, [&] {
         FullScreenWidget->hide();
         FullScreenWidget->setWindowOpacity(1);
         ReminderUnderlyingLabel->hide();
         SettingsUnderlyingLabel->hide();
-        });
+    });
 
     connect(SettingsSmallWindowTextLineEdit, &QLineEdit::textChanged, this, [&] {
         SmallWindow_text = SettingsSmallWindowTextLineEdit->text();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsReminderTextLineEdit, &QLineEdit::textChanged, this, [&] {
         reminder_text = SettingsReminderTextLineEdit->text();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsReminderSmallTextLineEdit, &QLineEdit::textChanged, this, [&] {
         reminder_small_text = SettingsReminderSmallTextLineEdit->text();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsTargetDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [&] {
         targetDateTime = SettingsTargetDateTimeEdit->dateTime();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsLanguageComboBox, &QComboBox::currentTextChanged, this, [&] {
         language = SettingsLanguageComboBox->currentText();
         changeLanguage();
         updateSettings();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsIsShowReminderCheckBox, &QCheckBox::checkStateChanged, this, [&] {
         is_show_reminder = SettingsIsShowReminderCheckBox->isChecked();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsRemainingDaysToPlayCountdownSoundSpinBox, &QSpinBox::valueChanged, this, [&] {
         remaining_days_to_play_countdown_sound = SettingsRemainingDaysToPlayCountdownSoundSpinBox->value();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsRemainingDaysToPlayHeartbeatSoundSpinBox, &QSpinBox::valueChanged, this, [&] {
         remaining_days_to_play_heartbeat_sound = SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->value();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsSmallWindowLevelButtonGroup, &QButtonGroup::buttonClicked, this, [&] {
         SmallWindow_on_top = SettingsSmallWindowOnTopRadioButton->isChecked();
         this->setWindowFlags((SmallWindow_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
@@ -366,16 +347,16 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         if (SmallWindow_on_top) {
             QMessageBox::information(FullScreenWidget, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
         }
-        });
+    });
     connect(SettingsSmallWindowPositionButtonGroup, &QButtonGroup::buttonClicked, this, [&] {
         floating_bar_position = SettingsSmallWindowPositionTopLeftRadioButton->isChecked() ? FloatingBarPosition::TopLeft : (SettingsSmallWindowPositionTopCenterRadioButton->isChecked() ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight);
         updateFloatingBar();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsCloseButton, &QPushButton::clicked, this, [&] {
         FullScreenWidget_mode = FullScreenWidgetMode::None;
         FullScreenWidgetHideAnimation->start();
-        });
+    });
     connect(SettingsSmallWindowHeightSpinBox, &QSpinBox::valueChanged, this, [&] {
         SmallWindow_height = SettingsSmallWindowHeightSpinBox->value();
         SmallWindowLabel->setFixedHeight(SmallWindow_height);
@@ -383,16 +364,16 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         SmallWindowLabel->setFont(font);
         updateFloatingBar();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsSmallWindowBorderRadiusSpinBox, &QSpinBox::valueChanged, this, [&] {
         border_radius = SettingsSmallWindowBorderRadiusSpinBox->value();
         SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(border_radius) + "px; color: red;"); // 更新悬浮条样式
-        writeConfig(); // 写入配置文件
-        });
+        writeConfig();                                                                                                                                  // 写入配置文件
+    });
     connect(SettingsBlockShowTimesSpinBox, &QSpinBox::valueChanged, this, [&] {
         block_show_times = SettingsBlockShowTimesSpinBox->value();
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsIsShowReminderCheckBox, &QCheckBox::checkStateChanged, this, [&] {
         is_show_reminder = SettingsIsShowReminderCheckBox->isChecked();
         SettingsRemainingDaysToPlayCountdownSoundSpinBox->setEnabled(is_show_reminder);
@@ -400,13 +381,13 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         SettingsBlockShowTimesSpinBox->setEnabled(is_show_reminder);
         SettingsReminderPreviewButton->setEnabled(is_show_reminder);
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsIsShowSmallWindowCheckBox, &QCheckBox::checkStateChanged, this, [&] {
         is_show_SmallWindow = SettingsIsShowSmallWindowCheckBox->isChecked();
         if (!is_show_SmallWindow) {
             this->hide();
-        }
-        else this->show();
+        } else
+            this->show();
         SettingsSmallWindowOnTopRadioButton->setEnabled(is_show_SmallWindow);
         SettingsSmallWindowOnBottomRadioButton->setEnabled(is_show_SmallWindow);
         SettingsSmallWindowPositionTopLeftRadioButton->setEnabled(is_show_SmallWindow);
@@ -415,16 +396,15 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
         SettingsSmallWindowHeightSpinBox->setEnabled(is_show_SmallWindow);
         SettingsSmallWindowBorderRadiusSpinBox->setEnabled(is_show_SmallWindow);
         writeConfig(); // 写入配置文件
-        });
+    });
     connect(SettingsReminderPreviewButton, &QPushButton::clicked, this, [&] {
         SettingsUnderlyingLabel->hide();
         FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
         showReminder();
-        });
+    });
 }
 
-UniversalTimer2::~UniversalTimer2()
-{
+UniversalTimer2::~UniversalTimer2() {
     delete FullScreenWidget;
 }
 
@@ -460,7 +440,7 @@ void UniversalTimer2::readConfig() {
         SettingsSmallWindowOnTopRadioButton->setChecked(SmallWindow_on_top);
         SettingsSmallWindowOnBottomRadioButton->setChecked(!SmallWindow_on_top);
 
-        border_radius = settings.value("border_radius", border_radius).toInt(); // 窗口圆角
+        border_radius = settings.value("border_radius", border_radius).toInt();                                                                         // 窗口圆角
         SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(border_radius) + "px; color: red;"); // 更新悬浮条样式
         SettingsSmallWindowBorderRadiusSpinBox->setValue(border_radius);
 
@@ -506,8 +486,8 @@ void UniversalTimer2::readConfig() {
 
         LanguageCodeList = settings.value("LanguageCodeList", LanguageCodeList).toStringList(); // 语言代码列表
         LanguageNameList = settings.value("LanguageNameList", LanguageNameList).toStringList(); // 语言名称列表
-        language = settings.value("language", language).toString(); // 当前语言
-        scanLanguage(); // 扫描语言
+        language = settings.value("language", language).toString();                             // 当前语言
+        scanLanguage();                                                                         // 扫描语言
         SettingsLanguageComboBox->setCurrentText(LanguageNameList.at(LanguageCodeList.indexOf(language)));
         changeLanguage();
 
@@ -515,8 +495,7 @@ void UniversalTimer2::readConfig() {
         if (settings.status() != QSettings::NoError) {
             QMessageBox::critical(NULL, tr("错误"), tr("配置文件读取失败<br>错误代码：") + QString::number(settings.status()), QMessageBox::Ok);
             writeLog("ERROR", "配置文件读取失败，错误代码：" + QString::number(settings.status()));
-        }
-        else {
+        } else {
             writeLog("INFO", "配置文件读取成功！");
         }
         readTimeList(); // 读取时间列表
@@ -524,8 +503,10 @@ void UniversalTimer2::readConfig() {
     // 否则，为第一次使用，显示欢迎界面，并创建配置文件
     else {
         // 获取系统语言
-        if (QLocale::system().language() == QLocale::Chinese) language = "zh-CN";
-        else language = "en";
+        if (QLocale::system().language() == QLocale::Chinese)
+            language = "zh-CN";
+        else
+            language = "en";
         scanLanguage();
         SettingsLanguageComboBox->setCurrentText(LanguageNameList.at(LanguageCodeList.indexOf(language)));
         changeLanguage();
@@ -549,7 +530,7 @@ void UniversalTimer2::readConfig() {
             // 删除背景图片
             FullScreenWidgetBackgroundLabel->setPixmap(QPixmap());
             readConfig(); // 刷新
-            });
+        });
         // 创建配置文件
         writeConfig();
     }
@@ -582,8 +563,7 @@ void UniversalTimer2::writeConfig() {
     if (settings.status() != QSettings::NoError) {
         QMessageBox::critical(NULL, tr("错误"), tr("配置文件写入失败<br>错误代码：") + QString::number(settings.status()), QMessageBox::Ok);
         writeLog("ERROR", "配置文件写入失败，错误代码：" + QString::number(settings.status()));
-    }
-    else {
+    } else {
         writeLog("INFO", "配置文件写入成功！");
     }
     writeTimeList(); // 写入时间列表
@@ -627,14 +607,12 @@ void UniversalTimer2::writeTimeList() {
     }
 }
 
-
 // 语言扫描函数
 void UniversalTimer2::scanLanguage() {
     for (int i = 0; i < LanguageCodeList.size(); i++) {
         if (QFile::exists("./lang/" + LanguageCodeList[i] + ".qm") && (SettingsLanguageComboBox->findText(LanguageNameList[i]) == -1) && LanguageCodeList[i] != "zh-CN") {
             SettingsLanguageComboBox->addItem(LanguageNameList[i]);
-        }
-        else if (LanguageCodeList[i] == "zh-CN" && (SettingsLanguageComboBox->findText("简体中文（中国大陆）") == -1)) {
+        } else if (LanguageCodeList[i] == "zh-CN" && (SettingsLanguageComboBox->findText("简体中文（中国大陆）") == -1)) {
             SettingsLanguageComboBox->addItem("简体中文（中国大陆）");
         }
     }
@@ -645,16 +623,16 @@ void UniversalTimer2::changeLanguage() {
     language = LanguageCodeList.at(LanguageNameList.indexOf(SettingsLanguageComboBox->currentText()));
     if (language != "zh-CN") {
         bool success = Translator->load("./lang/" + language + ".qm");
-        if (success) qApp->installTranslator(Translator);
-        else writeLog("ERROR", "语言切换失败");
-    }
-    else {
+        if (success)
+            qApp->installTranslator(Translator);
+        else
+            writeLog("ERROR", "语言切换失败");
+    } else {
         // 卸载
         qApp->removeTranslator(Translator);
     }
     updateText();
 }
-
 
 // 日志写入函数
 void UniversalTimer2::writeLog(QString type, QString log) {
@@ -675,7 +653,6 @@ void UniversalTimer2::showReminder() {
     ReminderSmallTextLabel->setText(reminder_small_text + QString::number(timeLeft / 86400) + " DAYS");
     adjustReminderSize(1.0);
     ReminderUnderlyingLabel->move((desktop.width() - ReminderUnderlyingLabel->width()) / 2, (desktop.height() - ReminderUnderlyingLabel->height()) / 2);
-
 
     ReminderUnderlyingLabel->hide();
     FullScreenWidgetBackgroundLabel->hide();
@@ -716,9 +693,10 @@ void UniversalTimer2::showBlocks(unsigned short times) {
     if (block_show_times != 0) {
         if ((timeLeft / 86400) <= remaining_days_to_play_heartbeat_sound) {
             CountdownSound->play();
-            if(times % 2) HeartbeatSound->play();
-        }
-        else if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound) CountdownSound->play();
+            if (times % 2)
+                HeartbeatSound->play();
+        } else if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound)
+            CountdownSound->play();
         for (int i = 0; i < ReminderBlockLabels.size(); i++) {
             ReminderBlockLabels[i]->show();
         }
@@ -729,21 +707,20 @@ void UniversalTimer2::showBlocks(unsigned short times) {
             QTimer::singleShot(500, this, [=] {
                 if (times < block_show_times) {
                     showBlocks(times + 1);
-                }
-                else FullScreenWidgetHideAnimation->start();
-                });
+                } else
+                    FullScreenWidgetHideAnimation->start();
             });
-    }
-    else QTimer::singleShot(3000, this, [&] {FullScreenWidgetHideAnimation->start(); });
+        });
+    } else
+        QTimer::singleShot(3000, this, [&] { FullScreenWidgetHideAnimation->start(); });
 }
-
 
 // 更新函数
 // 悬浮条更新函数
 void UniversalTimer2::updateFloatingBar() {
     // 更新标签文本
     SmallWindowLabel->setText(" " + SmallWindow_text + QString::number(timeLeft / 86400) + tr("天", "Floating Bar") + QString::number((timeLeft % 86400) / 3600) + tr("时") + QString::number((timeLeft % 3600) / 60) + tr("分") + QString::number(timeLeft % 60) + tr("秒 "));
-    
+
     // 更新大小
     SmallWindowLabel->adjustSize();
     SmallWindowLabel->resize(SmallWindowLabel->width() + 20, SmallWindow_height);
@@ -752,11 +729,9 @@ void UniversalTimer2::updateFloatingBar() {
     // 更新位置
     if (floating_bar_position == FloatingBarPosition::TopCenter) { // 中上
         this->move((desktop.width() - this->width()) / 2, 0);
-    }
-    else if (floating_bar_position ==  FloatingBarPosition::TopRight) { // 右上
+    } else if (floating_bar_position == FloatingBarPosition::TopRight) { // 右上
         this->move(desktop.width() - this->width(), 0);
-    }
-    else { // 左上
+    } else { // 左上
         this->move(0, 0);
     }
 }
@@ -842,13 +817,13 @@ void UniversalTimer2::updateText() {
     TrayIcon->contextMenu()->actions()[2]->setText(tr("退出"));
 
     // 更新全屏提醒文本
-    ReminderRemainingLabel->setText(tr("还剩")); // 全屏提醒剩余时间标签文本
+    ReminderRemainingLabel->setText(tr("还剩"));                 // 全屏提醒剩余时间标签文本
     ReminderDaysLabel->setText(tr("天", "Fullscreen Reminder")); // 全屏提醒剩余天数标签文本
 
     // 更新设置文本
     // 分组框标题
     SettingsTextAndDateGroupBox->setTitle(tr("文本和时间")); // 设置文本和日期分组框标题
-    SettingsReminderGroupBox->setTitle(tr("全屏提醒")); // 设置全屏提醒分组框标题
+    SettingsReminderGroupBox->setTitle(tr("全屏提醒"));      // 设置全屏提醒分组框标题
     SettingsSmallWindowGroupBox->setTitle(tr("悬浮条设置")); // 设置悬浮条分组框标题
     // 文本和时间分组框内对象
     SettingsSmallWindowTextLabel->setText(tr("悬浮条文本：")); // 悬浮条文本标签文本
@@ -859,25 +834,25 @@ void UniversalTimer2::updateText() {
     SettingsReminderSmallTextLineEdit->setPlaceholderText(tr("全屏提醒小文本"));
     SettingsTargetDateTimeLabel->setText(tr("目标时间：")); // 目标时间标签文本
     // 全屏提醒分组框内对象
-    SettingsReminderPreviewButton->setText(tr("预览")); // 全屏提醒预览按钮文本
-    SettingsIsShowReminderCheckBox->setText(tr("播报全屏提醒")); // 播报全屏提醒复选框文本
-    SettingsIsShowSmallWindowCheckBox->setText(tr("显示悬浮条")); // 显示悬浮条复选框文本
-    SettingsRemainingDaysToPlayCountdownSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放倒计时音效前缀文本
+    SettingsReminderPreviewButton->setText(tr("预览"));                                       // 全屏提醒预览按钮文本
+    SettingsIsShowReminderCheckBox->setText(tr("播报全屏提醒"));                              // 播报全屏提醒复选框文本
+    SettingsIsShowSmallWindowCheckBox->setText(tr("显示悬浮条"));                             // 显示悬浮条复选框文本
+    SettingsRemainingDaysToPlayCountdownSoundSpinBox->setPrefix(tr("剩余天数≤ "));            // 剩余天数播放倒计时音效前缀文本
     SettingsRemainingDaysToPlayCountdownSoundSpinBox->setSuffix(tr(" 天时播放倒计时提醒音")); // 剩余天数播放倒计时音效后缀文本
-    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放心跳音效前缀文本
-    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr(" 天时播放心跳提醒音")); // 剩余天数播放心跳音效后缀文本
-    SettingsBlockShowTimesSpinBox->setPrefix(tr("提醒音播放次数和方块闪烁次数：")); // 提醒音播放次数和方块闪烁次数前缀文本
-    SettingsBlockShowTimesSpinBox->setSuffix(tr(" 次")); // 提醒音播放次数和方块闪烁次数后缀文本
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setPrefix(tr("剩余天数≤ "));            // 剩余天数播放心跳音效前缀文本
+    SettingsRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr(" 天时播放心跳提醒音"));   // 剩余天数播放心跳音效后缀文本
+    SettingsBlockShowTimesSpinBox->setPrefix(tr("提醒音播放次数和方块闪烁次数："));           // 提醒音播放次数和方块闪烁次数前缀文本
+    SettingsBlockShowTimesSpinBox->setSuffix(tr(" 次"));                                      // 提醒音播放次数和方块闪烁次数后缀文本
     // 悬浮条分组框内对象
-    SettingsSmallWindowHeightSpinBox->setPrefix(tr("悬浮条高度：")); // 悬浮条高度前缀文本
-    SettingsSmallWindowHeightSpinBox->setSuffix(tr(" 像素")); // 悬浮条高度后缀文本
-    SettingsSmallWindowBorderRadiusSpinBox->setPrefix(tr("悬浮条圆角半径：")); // 悬浮条圆角半径前缀文本
-    SettingsSmallWindowBorderRadiusSpinBox->setSuffix(tr(" 像素")); // 悬浮条圆角半径后缀文本
-    SettingsSmallWindowOnTopRadioButton->setText(tr("悬浮条置顶")); // 悬浮条置顶单选按钮文本
-    SettingsSmallWindowOnBottomRadioButton->setText(tr("悬浮条置底")); // 悬浮条置底单选按钮文本
-    SettingsSmallWindowPositionTopLeftRadioButton->setText(tr("悬浮条位于左上")); // 悬浮条位置左上单选按钮文本
+    SettingsSmallWindowHeightSpinBox->setPrefix(tr("悬浮条高度："));                // 悬浮条高度前缀文本
+    SettingsSmallWindowHeightSpinBox->setSuffix(tr(" 像素"));                       // 悬浮条高度后缀文本
+    SettingsSmallWindowBorderRadiusSpinBox->setPrefix(tr("悬浮条圆角半径："));      // 悬浮条圆角半径前缀文本
+    SettingsSmallWindowBorderRadiusSpinBox->setSuffix(tr(" 像素"));                 // 悬浮条圆角半径后缀文本
+    SettingsSmallWindowOnTopRadioButton->setText(tr("悬浮条置顶"));                 // 悬浮条置顶单选按钮文本
+    SettingsSmallWindowOnBottomRadioButton->setText(tr("悬浮条置底"));              // 悬浮条置底单选按钮文本
+    SettingsSmallWindowPositionTopLeftRadioButton->setText(tr("悬浮条位于左上"));   // 悬浮条位置左上单选按钮文本
     SettingsSmallWindowPositionTopCenterRadioButton->setText(tr("悬浮条位于中上")); // 悬浮条位置中上单选按钮文本
-    SettingsSmallWindowPositionTopRightRadioButton->setText(tr("悬浮条位于右上")); // 悬浮条位置右上单选按钮文本
+    SettingsSmallWindowPositionTopRightRadioButton->setText(tr("悬浮条位于右上"));  // 悬浮条位置右上单选按钮文本
     // 关闭设置按钮
     SettingsCloseButton->setText(tr("关闭设置")); // 设置关闭按钮文本
 }

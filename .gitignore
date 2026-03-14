@@ -28,6 +28,7 @@ x86/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
+[Bb]uild/
 [Oo]bj/
 [Oo]ut/
 [Ll]og/
@@ -40,6 +41,9 @@ bld/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
+
+# Visual Studio Code options directory
+.vscode/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
