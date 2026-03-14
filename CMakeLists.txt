@@ -18,29 +18,21 @@ qt_standard_project_setup()
 
 # Source files
 set(PROJECT_SOURCES
-    Universal-Timer-2/main.cpp
-    Universal-Timer-2/UniversalTimer2.cpp
-    Universal-Timer-2/UniversalTimer2.h
-    Universal-Timer-2/UniversalTimer2.ui
-    Universal-Timer-2/UniversalTimer2.qrc
-    Universal-Timer-2/Resource.rc
+    src/main.cpp
+    src/UniversalTimer2.cpp
+    src/UniversalTimer2.h
+    resources/Resource.rc
+    resources/resource.h
 )
 
 # Qt resources
 qt_add_resources(QT_RESOURCES
-    Universal-Timer-2/UniversalTimer2.qrc
-)
-
-# Translation files
-set(PROJECT_TRANSLATIONS
-    Universal-Timer-2/lang/translation/translation_en.ts
-    Universal-Timer-2/lang/translation/translation_zh-Classic-Hans.ts
-    Universal-Timer-2/lang/translation/translation_zh-Classic-Hant.ts
+    resources/UniversalTimer2.qrc
 )
 
 # Windows icon
 set(PROJECT_ICON
-    Universal-Timer-2/Universal-Timer-2_icon.ico
+    resources/Universal-Timer-2_icon.ico
 )
 
 qt_add_executable(${PROJECT_NAME} 
@@ -63,9 +55,18 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Multimedia
 )
 
+# Copy sound files to output directory
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/Universal-Timer-2/sound"
+    "${CMAKE_SOURCE_DIR}/resources/sound"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>/sound"
     COMMENT "Copying sound files to output directory"
+)
+
+# Copy icon to output directory
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_SOURCE_DIR}/resources/Universal-Timer-2_icon.ico"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Universal-Timer-2_icon.ico"
+    COMMENT "Copying icon to output directory"
 )

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <QtWidgets/QWidget>
-#include "ui_UniversalTimer2.h"
 #include <numbers>
 #include <QLabel>
 #include <QPropertyAnimation>
@@ -33,8 +32,7 @@ public:
     ~UniversalTimer2();
 
 private:
-    Ui::UniversalTimer2Class ui;
-
+    // UI members removed - using dynamic UI creation instead
     
     // 函数声明
     // 配置
