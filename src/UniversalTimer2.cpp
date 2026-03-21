@@ -3,11 +3,11 @@
 #include <QMenu>
 #include <QSettings>
 #include <QFile>
+#include <QApplication>
 
-UniversalTimer2::UniversalTimer2(QWidget *parent)
+UniversalTimer2::UniversalTimer2(QWidget* parent)
     : QWidget(parent)
 {
-    ui.setupUi(this);
 
 
     desktop = QApplication::primaryScreen()->geometry(); // 获取屏幕分辨率
@@ -29,9 +29,9 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     HeartbeatSound->setSource(QUrl::fromLocalFile("./sound/heartbeat.wav"));
 
 
-    TrayIcon = new QSystemTrayIcon(QIcon(":/img/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
+    TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
-    QMenu *TrayIconMenu = new QMenu(this); // 系统托盘菜单
+    QMenu* TrayIconMenu = new QMenu(this); // 系统托盘菜单
     TrayIconMenu->addAction(tr("设置"), this, [&] {
         FullScreenWidget_mode = FullScreenWidgetMode::Settings;
         FullScreenWidget->show();
@@ -141,13 +141,13 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsSmallWindowGroupBox->setStyleSheet("QGroupBox {border: 1px solid rgba(255, 0, 0, 0.5); color: red; margin-top: " + QString::number(font.pixelSize() / 2) + "px; border-radius: " + QString::number(font.pixelSize() / 2) + "px;} QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top left;} QRadioButton {color: white;} QCheckBox {color: white;}");
     SettingsSmallWindowGroupBox->show();
 
-    
+
     // ButtonGroup
     SettingsSmallWindowLevelButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
     SettingsSmallWindowLevelButtonGroup->setExclusive(true);
     SettingsSmallWindowPositionButtonGroup = new QButtonGroup(SettingsSmallWindowGroupBox); // 悬浮条位置按钮组
     SettingsSmallWindowPositionButtonGroup->setExclusive(true);
-    
+
 
     // Label in GroupBox
     SettingsSmallWindowTextLabel = new QLabel(SettingsTextAndDateGroupBox); // 悬浮条文本标签
@@ -164,7 +164,7 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     SettingsTargetDateTimeLabel->setFont(font);
     SettingsTargetDateTimeLabel->show();
 
-    
+
     // PushButton in GroupBox
     SettingsReminderPreviewButton = new QPushButton(SettingsReminderGroupBox); // 全屏提醒预览按钮
     SettingsReminderPreviewButton->show();
@@ -288,7 +288,7 @@ UniversalTimer2::UniversalTimer2(QWidget *parent)
     FullScreenAnimationGroup->addAnimation(FullScreenAnimation2);
 
     readConfig(); // 读取配置文件
-    
+
     // connection
     Timer = new QTimer(this); // 定时器
     connect(Timer, &QTimer::timeout, this, &UniversalTimer2::updateObjects);
@@ -534,7 +534,7 @@ void UniversalTimer2::readConfig() {
         WelcomeLabel->setAlignment(Qt::AlignCenter);
         WelcomeLabel->resize(desktop.size());
         WelcomeLabel->setStyleSheet("color: white; font-size: 40px; font-weight: bold; background: transparent;");
-        FullScreenWidgetBackgroundLabel->setPixmap(QPixmap(":/img/background/Universal-Timer.png"));
+        FullScreenWidgetBackgroundLabel->setPixmap(QPixmap(":/images/background/Universal-Timer.png"));
         FullScreenWidgetBackgroundLabel->setScaledContents(true);
         WelcomeLabel->show();
         WelcomeButton = new QPushButton(tr("开始"), WelcomeLabel);
@@ -716,7 +716,7 @@ void UniversalTimer2::showBlocks(unsigned short times) {
     if (block_show_times != 0) {
         if ((timeLeft / 86400) <= remaining_days_to_play_heartbeat_sound) {
             CountdownSound->play();
-            if(times % 2) HeartbeatSound->play();
+            if (times % 2) HeartbeatSound->play();
         }
         else if ((timeLeft / 86400) <= remaining_days_to_play_countdown_sound) CountdownSound->play();
         for (int i = 0; i < ReminderBlockLabels.size(); i++) {
@@ -743,7 +743,7 @@ void UniversalTimer2::showBlocks(unsigned short times) {
 void UniversalTimer2::updateFloatingBar() {
     // 更新标签文本
     SmallWindowLabel->setText(" " + SmallWindow_text + QString::number(timeLeft / 86400) + tr("天", "Floating Bar") + QString::number((timeLeft % 86400) / 3600) + tr("时") + QString::number((timeLeft % 3600) / 60) + tr("分") + QString::number(timeLeft % 60) + tr("秒 "));
-    
+
     // 更新大小
     SmallWindowLabel->adjustSize();
     SmallWindowLabel->resize(SmallWindowLabel->width() + 20, SmallWindow_height);
@@ -753,7 +753,7 @@ void UniversalTimer2::updateFloatingBar() {
     if (floating_bar_position == FloatingBarPosition::TopCenter) { // 中上
         this->move((desktop.width() - this->width()) / 2, 0);
     }
-    else if (floating_bar_position ==  FloatingBarPosition::TopRight) { // 右上
+    else if (floating_bar_position == FloatingBarPosition::TopRight) { // 右上
         this->move(desktop.width() - this->width(), 0);
     }
     else { // 左上

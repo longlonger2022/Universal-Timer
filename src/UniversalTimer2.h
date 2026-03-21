@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <QtWidgets/QWidget>
-#include "ui_UniversalTimer2.h"
 #include <numbers>
 #include <QLabel>
 #include <QPropertyAnimation>
@@ -29,13 +28,12 @@ class UniversalTimer2 : public QWidget
     Q_OBJECT
 
 public:
-    UniversalTimer2(QWidget *parent = nullptr);
+    UniversalTimer2(QWidget* parent = nullptr);
     ~UniversalTimer2();
 
 private:
-    Ui::UniversalTimer2Class ui;
 
-    
+
     // 函数声明
     // 配置
     void readConfig(); // 读取配置
@@ -534,7 +532,7 @@ private:
     // ButtonGroup
     QButtonGroup* SettingsSmallWindowLevelButtonGroup; // 悬浮条层级按钮组
     QButtonGroup* SettingsSmallWindowPositionButtonGroup; // 悬浮条位置按钮组
-    
+
     // Label
     QLabel* WelcomeLabel; // 欢迎标签
     QLabel* SmallWindowLabel; // 悬浮条背景标签
