@@ -667,7 +667,8 @@ void UniversalTimer2::writeLog(QString type, QString log) {
 
 // 动画函数
 void UniversalTimer2::showReminder() {
-    FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
+    if (FullScreenWidget_mode != FullScreenWidgetMode::Welcome)
+        FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
     currentDateTime = QDateTime::currentDateTime();
     timeLeft = currentDateTime.secsTo(targetDateTime);
     // 更新标签文本
