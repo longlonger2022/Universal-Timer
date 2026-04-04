@@ -329,6 +329,7 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         });
     connect(SettingsReminderTextLineEdit, &QLineEdit::textChanged, this, [this] {
         reminder_text = SettingsReminderTextLineEdit->text();
+        ReminderTextLabel->setText(reminder_text);
         writeConfig(); // 写入配置文件
         });
     connect(SettingsReminderSmallTextLineEdit, &QLineEdit::textChanged, this, [this] {
