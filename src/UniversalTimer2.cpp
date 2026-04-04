@@ -24,9 +24,9 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
 
     // Sound
     CountdownSound = new QSoundEffect(this);
-    CountdownSound->setSource(QUrl::fromLocalFile("./sound/countdown.wav"));
+    CountdownSound->setSource(QUrl::fromLocalFile("./sounds/countdown.wav"));
     HeartbeatSound = new QSoundEffect(this);
-    HeartbeatSound->setSource(QUrl::fromLocalFile("./sound/heartbeat.wav"));
+    HeartbeatSound->setSource(QUrl::fromLocalFile("./sounds/heartbeat.wav"));
 
 
     TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
