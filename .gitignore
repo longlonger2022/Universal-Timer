@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # RCxxxxxx - 神奇的 Visual Studio 临时文件
 RC[a-z][0-9]{5}
+
+# CMakeUserPresets.json
+CMakeUserPresets.json
