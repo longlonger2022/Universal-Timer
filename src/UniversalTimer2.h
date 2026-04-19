@@ -21,7 +21,7 @@
 #include <QDateTime>
 #include <QTimer>
 
-inline static constexpr double GOLDEN_RATIO_INV = 1.0 / std::numbers::phi; // 黄金比例倒数
+inline constexpr double GOLDEN_RATIO_INV = 1.0 / std::numbers::phi; // 黄金比例倒数
 
 class UniversalTimer2 : public QWidget
 {
