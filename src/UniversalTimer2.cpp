@@ -657,14 +657,6 @@ void UniversalTimer2::changeLanguage() {
 }
 
 
-// 日志写入函数
-void UniversalTimer2::writeLog(QString type, QString log) {
-    QFile file("Universal-Timer.log");
-    if (file.open(QIODevice::Append | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << currentDateTime.toString("yyyy-MM-dd hh:mm:ss") << " - [" << type << "] - " << log << "\n";
-    }
-}
 
 // 动画函数
 void UniversalTimer2::showReminder() {

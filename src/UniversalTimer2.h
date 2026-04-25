@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Logger.h"
+
 #include <QtWidgets/QWidget>
 #include <numbers>
 #include <QLabel>
@@ -46,9 +48,6 @@ private:
     // 语言
     void scanLanguage(); // 扫描语言
     void changeLanguage(); // 切换语言
-
-    // 日志
-    void writeLog(QString type, QString log); // 写入日志
 
     // 全屏窗口
     void showReminder(); // 显示全屏窗口

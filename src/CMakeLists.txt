@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
     main.cpp
     UniversalTimer2.h
     UniversalTimer2.cpp
+    Logger.h
     Resource.rc
     resource.h
     ../assets/UniversalTimer2.qrc
