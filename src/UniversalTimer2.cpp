@@ -37,7 +37,7 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         FullScreenWidget->show();
         FullScreenAnimationGroup->start();
         }); // 系统托盘菜单项：设置
-    TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::readConfig); // 系统托盘菜单项：刷新
+    //TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::readConfig); // 系统托盘菜单项：刷新
     TrayIconMenu->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->setContextMenu(TrayIconMenu);
     TrayIcon->show();
