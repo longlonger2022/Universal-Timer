@@ -9,6 +9,6 @@ inline void writeLog(QString type, QString log) {
     QFile file("Universal-Timer.log");
     if (file.open(QIODevice::Append | QIODevice::Text)) {
         QTextStream out(&file);
-        out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << " - [" << type << "] - " << log << Qt::endl;
+        out << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz") << " - [" << type << "] - " << log << Qt::endl;
     }
 }
