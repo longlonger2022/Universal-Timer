@@ -524,33 +524,8 @@ void UniversalTimer2::readConfig() {
     }
     // 否则，为第一次使用，显示欢迎界面，并创建配置文件
     else {
-        // 获取系统语言
-        if (QLocale::system().language() == QLocale::Chinese) language = "zh-CN";
-        else language = "en";
-        scanLanguage();
-        SettingsLanguageComboBox->setCurrentText(LanguageNameList.at(LanguageCodeList.indexOf(language)));
-        changeLanguage();
-        FullScreenWidget_mode = FullScreenWidgetMode::Welcome;
-        WelcomeLabel = new QLabel(tr("欢迎使用万能倒计时!<br>简单设置，并开始使用吧!"), FullScreenWidgetBackgroundLabel);
-        WelcomeLabel->setAlignment(Qt::AlignCenter);
-        WelcomeLabel->resize(desktop.size());
-        WelcomeLabel->setStyleSheet("color: white; font-size: 40px; font-weight: bold; background: transparent;");
-        FullScreenWidgetBackgroundLabel->setPixmap(QPixmap(":/images/background/Universal-Timer.png"));
-        FullScreenWidgetBackgroundLabel->setScaledContents(true);
-        WelcomeLabel->show();
-        WelcomeButton = new QPushButton(tr("开始"), WelcomeLabel);
-        WelcomeButton->setGeometry(desktop.width() * 0.45, desktop.height() * 0.6, desktop.width() * 0.1, desktop.height() * 0.1);
-        WelcomeButton->setStyleSheet("color: white; font-size: 20px; font-weight: bold; background: rgba(0, 0, 0, 0.5); border-radius: 10px;");
-        WelcomeButton->show();
-        this->hide();
-        connect(WelcomeButton, &QPushButton::clicked, [this] {
-            FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
-            WelcomeLabel->deleteLater();
-            WelcomeButton->deleteLater();
-            // 删除背景图片
-            FullScreenWidgetBackgroundLabel->setPixmap(QPixmap());
-            readConfig(); // 刷新
-            });
+        // 显示欢迎界面
+        showWelcome();
         // 创建配置文件
         writeConfig();
     }
@@ -654,6 +629,38 @@ void UniversalTimer2::changeLanguage() {
         qApp->removeTranslator(Translator);
     }
     updateText();
+}
+
+
+// 欢迎界面显示函数
+void UniversalTimer2::showWelcome() {
+    // 获取系统语言
+    if (QLocale::system().language() == QLocale::Chinese) language = "zh-CN";
+    else language = "en";
+    scanLanguage();
+    SettingsLanguageComboBox->setCurrentText(LanguageNameList.at(LanguageCodeList.indexOf(language)));
+    changeLanguage();
+    FullScreenWidget_mode = FullScreenWidgetMode::Welcome;
+    WelcomeLabel = new QLabel(tr("欢迎使用万能倒计时!<br>简单设置，并开始使用吧!"), FullScreenWidgetBackgroundLabel);
+    WelcomeLabel->setAlignment(Qt::AlignCenter);
+    WelcomeLabel->resize(desktop.size());
+    WelcomeLabel->setStyleSheet("color: white; font-size: 40px; font-weight: bold; background: transparent;");
+    FullScreenWidgetBackgroundLabel->setPixmap(QPixmap(":/images/background/Universal-Timer.png"));
+    FullScreenWidgetBackgroundLabel->setScaledContents(true);
+    WelcomeLabel->show();
+    WelcomeButton = new QPushButton(tr("开始"), WelcomeLabel);
+    WelcomeButton->setGeometry(desktop.width() * 0.45, desktop.height() * 0.6, desktop.width() * 0.1, desktop.height() * 0.1);
+    WelcomeButton->setStyleSheet("color: white; font-size: 20px; font-weight: bold; background: rgba(0, 0, 0, 0.5); border-radius: 10px;");
+    WelcomeButton->show();
+    this->hide();
+    connect(WelcomeButton, &QPushButton::clicked, [this] {
+        FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
+        WelcomeLabel->deleteLater();
+        WelcomeButton->deleteLater();
+        // 删除背景图片
+        FullScreenWidgetBackgroundLabel->setPixmap(QPixmap());
+        readConfig(); // 刷新
+        });
 }
 
 

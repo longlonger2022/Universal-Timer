@@ -33,6 +33,9 @@ public:
     UniversalTimer2(QWidget* parent = nullptr);
     ~UniversalTimer2();
 
+    // 欢迎
+    void showWelcome(); // 显示欢迎界面
+
 private:
 
 
