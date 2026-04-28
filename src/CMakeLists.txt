@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
     UniversalTimer2.h
     UniversalTimer2.cpp
     Logger.h
+    ConfigManager.h
+    ConfigManager.cpp
     Resource.rc
     resource.h
     ../assets/UniversalTimer2.qrc
