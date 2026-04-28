@@ -35,7 +35,7 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         FullScreenWidget->show();
         FullScreenAnimationGroup->start();
         }); // 系统托盘菜单项：设置
-    //TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::readConfig); // 系统托盘菜单项：刷新
+    TrayIconMenu->addAction(tr("刷新"), this, &UniversalTimer2::refresh); // 系统托盘菜单项：刷新
     TrayIconMenu->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->setContextMenu(TrayIconMenu);
     TrayIcon->show();
@@ -832,8 +832,8 @@ void UniversalTimer2::updateText() {
     // 更新系统托盘文本
     TrayIcon->setToolTip(tr("万能倒计时"));
     TrayIcon->contextMenu()->actions()[0]->setText(tr("设置"));
-    //TrayIcon->contextMenu()->actions()[1]->setText(tr("刷新"));
-    TrayIcon->contextMenu()->actions()[1]->setText(tr("退出"));
+    TrayIcon->contextMenu()->actions()[1]->setText(tr("刷新"));
+    TrayIcon->contextMenu()->actions()[2]->setText(tr("退出"));
 
     // 更新全屏提醒文本
     ReminderRemainingLabel->setText(tr("还剩")); // 全屏提醒剩余时间标签文本
