@@ -354,9 +354,11 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         this->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
         this->hide();
         this->show();
-        if (Config.FloatingBar.floating_bar_on_top) { // TODO)) Only Windows need it
+#ifdef Q_OS_WIN
+        if (Config.FloatingBar.floating_bar_on_top) {
             QMessageBox::information(FullScreenWidget, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
         }
+#endif
         });
     connect(SettingsSmallWindowPositionButtonGroup, &QButtonGroup::buttonClicked, this, [this] {
         Config.set(Config.FloatingBar.floating_bar_position, SettingsSmallWindowPositionTopLeftRadioButton->isChecked() ? FloatingBarPosition::TopLeft : (SettingsSmallWindowPositionTopCenterRadioButton->isChecked() ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight));
