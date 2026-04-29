@@ -884,7 +884,7 @@ void UniversalTimer2::updateObjects() {
     }
     // 定时显示全屏提醒
     if (Config.Reminder.is_show_reminder && (!FullScreenWidget->isVisible())) {
-        if (Config.Reminder.reminder_time_list.contains(QTime::fromString(QDateTime::currentDateTime().toString("hh:mm:ss")))) {// [TODO] 简化
+        if (Config.Reminder.reminder_time_list.contains(QTime::currentTime())) {
             showReminder();
         }
     }
