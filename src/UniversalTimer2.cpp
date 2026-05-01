@@ -761,14 +761,16 @@ void UniversalTimer2::updateFloatingBar() {
     FloatingBar->adjustSize();
 
     // 更新位置
-    if (Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopCenter) { // 中上
-        FloatingBar->move((desktop.width() - FloatingBar->width()) / 2, 0);
-    }
-    else if (Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopRight) { // 右上
-        FloatingBar->move(desktop.width() - FloatingBar->width(), 0);
-    }
-    else { // 左上
-        FloatingBar->move(0, 0);
+    switch (Config.FloatingBar.floating_bar_position) {
+        case FloatingBarPosition::TopCenter:
+            FloatingBar->move((desktop.width() - FloatingBar->width()) / 2, 0);
+            break;
+        case FloatingBarPosition::TopRight:
+            FloatingBar->move(desktop.width() - FloatingBar->width(), 0);
+            break;
+        case FloatingBarPosition::TopLeft:
+            FloatingBar->move(0, 0);
+            break;
     }
 }
 // 全屏提醒更新函数
