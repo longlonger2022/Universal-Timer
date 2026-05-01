@@ -1,5 +1,5 @@
 #include "UniversalTimer2.h"
-#include "Logger.h"
+#include "LogManager.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])

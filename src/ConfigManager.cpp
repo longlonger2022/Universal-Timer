@@ -1,5 +1,5 @@
 #include "ConfigManager.h"
-#include "Logger.h"
+#include "LogManager.h"
 
 ConfigManager::ConfigManager(QObject* parent) : QObject(parent)
 {
