@@ -5,16 +5,12 @@
 #include <QFile>
 #include <QApplication>
 
-UniversalTimer2::UniversalTimer2(QWidget* parent)
-    : QWidget(parent)
+UniversalTimer2::UniversalTimer2(QObject* parent)
+    : QObject(parent)
 {
 
 
     desktop = QApplication::primaryScreen()->geometry(); // 获取屏幕分辨率
-
-    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool); // 无边框窗口
-    this->setAttribute(Qt::WA_TranslucentBackground); // 设置窗口背景透明
-
 
     // Translator
     Translator = new QTranslator(this);
@@ -29,7 +25,7 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
 
     TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
-    QMenu* TrayIconMenu = new QMenu(this); // 系统托盘菜单
+    QMenu* TrayIconMenu = new QMenu; // 系统托盘菜单
     TrayIconMenu->addAction(tr("设置"), this, [this] {
         FullScreenWidget_mode = FullScreenWidgetMode::Settings;
         FullScreenWidget->show();
@@ -41,6 +37,11 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
     TrayIcon->show();
 
 
+    // Floating Bar
+    FloatingBar = new FloatingBarClass;
+    FloatingBar->show();
+
+
     // Widget
     FullScreenWidget = new QWidget; // 全屏窗口
     FullScreenWidget->setGeometry(desktop);
@@ -50,10 +51,10 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
 
 
     // Label
-    SmallWindowLabel = new QLabel(this); // 悬浮条标签
+    /*SmallWindowLabel = new QLabel(this); // 悬浮条标签
     SmallWindowLabel->setStyleSheet("font-family: Microsoft YaHei UI, Microsoft YaHei; background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;");
     SmallWindowLabel->setAlignment(Qt::AlignCenter);
-    SmallWindowLabel->show();
+    SmallWindowLabel->show();*/
     FullScreenWidgetBackgroundLabel = new QLabel(FullScreenWidget); // 全屏窗口背景标签
     FullScreenWidgetBackgroundLabel->resize(desktop.size());
     FullScreenWidgetBackgroundLabel->setStyleSheet("background: rgba(0, 0, 0, 0.75)");
@@ -351,9 +352,9 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         });
     connect(SettingsSmallWindowLevelButtonGroup, &QButtonGroup::buttonClicked, this, [this] {
         Config.set(Config.FloatingBar.floating_bar_on_top, SettingsSmallWindowOnTopRadioButton->isChecked());
-        this->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
-        this->hide();
-        this->show();
+        FloatingBar->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        FloatingBar->hide();
+        FloatingBar->show();
 #ifdef Q_OS_WIN
         if (Config.FloatingBar.floating_bar_on_top) {
             QMessageBox::information(FullScreenWidget, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
@@ -368,16 +369,16 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
         FullScreenWidget_mode = FullScreenWidgetMode::None;
         FullScreenWidgetHideAnimation->start();
         });
-    connect(SettingsSmallWindowHeightSpinBox, &QSpinBox::valueChanged, this, [this] {
+    connect(SettingsSmallWindowHeightSpinBox, &QSpinBox::valueChanged, this, [this] { // todo)) 解决修改悬浮条高度之后悬浮条圆角SpinBox上限不会修改的问题
         Config.set(Config.FloatingBar.floating_bar_height, SettingsSmallWindowHeightSpinBox->value());
-        SmallWindowLabel->setFixedHeight(Config.FloatingBar.floating_bar_height);
+        FloatingBar->setFixedHeight(Config.FloatingBar.floating_bar_height);
         font.setPixelSize(Config.FloatingBar.floating_bar_height * GOLDEN_RATIO_INV);
-        SmallWindowLabel->setFont(font);
+        FloatingBar->Bar->setFont(font);
         updateFloatingBar();
         });
     connect(SettingsSmallWindowBorderRadiusSpinBox, &QSpinBox::valueChanged, this, [this] {
         Config.set(Config.FloatingBar.floating_bar_border_radius, SettingsSmallWindowBorderRadiusSpinBox->value());
-        SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
+        FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
         });
     connect(SettingsBlockShowTimesSpinBox, &QSpinBox::valueChanged, this, [this] {
         Config.set(Config.Reminder.block_show_times, SettingsBlockShowTimesSpinBox->value());
@@ -392,9 +393,9 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
     connect(SettingsIsShowSmallWindowCheckBox, &QCheckBox::checkStateChanged, this, [this] {
         Config.set(Config.FloatingBar.is_show_floating_bar, SettingsIsShowSmallWindowCheckBox->isChecked());
         if (!Config.FloatingBar.is_show_floating_bar) {
-            this->hide();
+            FloatingBar->hide();
         }
-        else this->show();
+        else FloatingBar->show();
         SettingsSmallWindowOnTopRadioButton->setEnabled(Config.FloatingBar.is_show_floating_bar);
         SettingsSmallWindowOnBottomRadioButton->setEnabled(Config.FloatingBar.is_show_floating_bar);
         SettingsSmallWindowPositionTopLeftRadioButton->setEnabled(Config.FloatingBar.is_show_floating_bar);
@@ -413,6 +414,7 @@ UniversalTimer2::UniversalTimer2(QWidget* parent)
 UniversalTimer2::~UniversalTimer2()
 {
     delete FullScreenWidget;
+    delete FloatingBar;
 }
 
 // 配置文件读取函数
@@ -541,8 +543,7 @@ void UniversalTimer2::refresh() {
 
     // FloatingBar
     if (!Config.FloatingBar.is_show_floating_bar) {
-        this->hide();
-        SmallWindowLabel->hide();
+        FloatingBar->hide();
     }
     SettingsIsShowSmallWindowCheckBox->setChecked(Config.FloatingBar.is_show_floating_bar);
     SettingsSmallWindowOnTopRadioButton->setEnabled(Config.FloatingBar.is_show_floating_bar);
@@ -553,7 +554,7 @@ void UniversalTimer2::refresh() {
     SettingsSmallWindowHeightSpinBox->setEnabled(Config.FloatingBar.is_show_floating_bar);
     SettingsSmallWindowBorderRadiusSpinBox->setEnabled(Config.FloatingBar.is_show_floating_bar);
 
-    this->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+    FloatingBar->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
     SettingsSmallWindowOnTopRadioButton->setChecked(Config.FloatingBar.floating_bar_on_top);
     SettingsSmallWindowOnBottomRadioButton->setChecked(!Config.FloatingBar.floating_bar_on_top);
 
@@ -561,11 +562,11 @@ void UniversalTimer2::refresh() {
     SettingsSmallWindowPositionTopCenterRadioButton->setChecked(Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopCenter);
     SettingsSmallWindowPositionTopRightRadioButton->setChecked(Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopRight);
 
-    SmallWindowLabel->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
+    FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
     SettingsSmallWindowBorderRadiusSpinBox->setValue(Config.FloatingBar.floating_bar_border_radius);
 
     font.setPixelSize(Config.FloatingBar.floating_bar_height * GOLDEN_RATIO_INV);
-    SmallWindowLabel->setFont(font);
+    FloatingBar->Bar->setFont(font);
     SettingsSmallWindowHeightSpinBox->setValue(Config.FloatingBar.floating_bar_height);
     SettingsSmallWindowBorderRadiusSpinBox->setRange(0, Config.FloatingBar.floating_bar_height / 2);
 
@@ -662,7 +663,7 @@ void UniversalTimer2::showWelcome() {
     WelcomeButton->setGeometry(desktop.width() * 0.45, desktop.height() * 0.6, desktop.width() * 0.1, desktop.height() * 0.1);
     WelcomeButton->setStyleSheet("color: white; font-size: 20px; font-weight: bold; background: rgba(0, 0, 0, 0.5); border-radius: 10px;");
     WelcomeButton->show();
-    this->hide();
+    FloatingBar->hide();
     connect(WelcomeButton, &QPushButton::clicked, [this] {
         FullScreenWidget_mode = FullScreenWidgetMode::Reminder;
         WelcomeLabel->deleteLater();
@@ -752,22 +753,22 @@ void UniversalTimer2::showBlocks(unsigned short times) {
 // 悬浮条更新函数
 void UniversalTimer2::updateFloatingBar() {
     // 更新标签文本
-    SmallWindowLabel->setText(" " + Config.FloatingBar.floating_bar_text + QString::number(timeLeft / 86400) + tr("天", "Floating Bar") + QString::number((timeLeft % 86400) / 3600) + tr("时") + QString::number((timeLeft % 3600) / 60) + tr("分") + QString::number(timeLeft % 60) + tr("秒 "));
+    FloatingBar->Bar->setText(" " + Config.FloatingBar.floating_bar_text + QString::number(timeLeft / 86400) + tr("天", "Floating Bar") + QString::number((timeLeft % 86400) / 3600) + tr("时") + QString::number((timeLeft % 3600) / 60) + tr("分") + QString::number(timeLeft % 60) + tr("秒 "));
 
     // 更新大小
-    SmallWindowLabel->adjustSize();
-    SmallWindowLabel->resize(SmallWindowLabel->width() + 20, Config.FloatingBar.floating_bar_height);
-    this->adjustSize();
+    FloatingBar->Bar->adjustSize();
+    FloatingBar->Bar->resize(FloatingBar->Bar->width() + 20, Config.FloatingBar.floating_bar_height);
+    FloatingBar->adjustSize();
 
     // 更新位置
     if (Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopCenter) { // 中上
-        this->move((desktop.width() - this->width()) / 2, 0);
+        FloatingBar->move((desktop.width() - FloatingBar->width()) / 2, 0);
     }
     else if (Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopRight) { // 右上
-        this->move(desktop.width() - this->width(), 0);
+        FloatingBar->move(desktop.width() - FloatingBar->width(), 0);
     }
     else { // 左上
-        this->move(0, 0);
+        FloatingBar->move(0, 0);
     }
 }
 // 全屏提醒更新函数

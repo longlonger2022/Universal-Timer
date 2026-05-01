@@ -2,6 +2,7 @@
 
 #include "LogManager.h"
 #include "ConfigManager.h"
+#include "FloatingBar.h"
 
 #include <QtWidgets/QWidget>
 #include <numbers>
@@ -26,12 +27,12 @@
 
 inline constexpr double GOLDEN_RATIO_INV = 1.0 / std::numbers::phi; // 黄金比例倒数
 
-class UniversalTimer2 : public QWidget
+class UniversalTimer2 : public QObject
 {
     Q_OBJECT
 
 public:
-    UniversalTimer2(QWidget* parent = nullptr);
+    UniversalTimer2(QObject* parent = nullptr);
     ~UniversalTimer2();
 
     // 欢迎
@@ -65,6 +66,9 @@ private:
 
     // 配置
     ConfigManager Config;
+
+    // 悬浮条
+    FloatingBarClass* FloatingBar;
 
 
     // 强枚举
@@ -108,7 +112,6 @@ private:
 
     // Label
     QLabel* WelcomeLabel; // 欢迎标签
-    QLabel* SmallWindowLabel; // 悬浮条背景标签
     QLabel* FullScreenAnimationLabel; // 红色全屏动画标签
     QLabel* FullScreenWidgetBackgroundLabel; // 全屏窗口背景标签
 

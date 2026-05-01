@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
     main.cpp
     UniversalTimer2.h
     UniversalTimer2.cpp
+    FloatingBar.h
+    FloatingBar.cpp
     LogManager.h
     ConfigManager.h
     ConfigManager.cpp
