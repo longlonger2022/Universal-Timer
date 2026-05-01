@@ -12,6 +12,8 @@ ConfigManager::~ConfigManager()
 
 void ConfigManager::read() {
     if (QFile::exists("config.ini")) {
+        qDebug() << "读取配置文件……";
+
         QSettings Settings("config.ini", QSettings::IniFormat);
 
         Settings.beginGroup("General");
@@ -40,10 +42,14 @@ void ConfigManager::read() {
         Reminder.block_show_times = Settings.value("block_show_times", 4).toUInt();
         Reminder.reminder_time_list = Settings.value("reminder_time_list").toList();
         Settings.endGroup();
+
+        qInfo() << "配置文件读取成功";
     }
 }
 
 void ConfigManager::write() {
+    qDebug() << "写入配置文件……";
+
     QSettings Settings("config.ini", QSettings::IniFormat);
 
     Settings.beginGroup("General");

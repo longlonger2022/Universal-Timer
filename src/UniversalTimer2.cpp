@@ -523,6 +523,8 @@ UniversalTimer2::~UniversalTimer2()
 // 刷新函数
 void UniversalTimer2::refresh() {
 
+    qDebug() << "刷新……";
+
     Config.read();
     
     // General
@@ -593,6 +595,8 @@ void UniversalTimer2::refresh() {
     if (Config.Reminder.is_show_reminder) {
         showReminder();
     }
+
+    qDebug() << "刷新结束";
 }
 
 
@@ -602,25 +606,33 @@ void UniversalTimer2::scanLanguage() {
     for (int i = 0; i < Config.General.language_code_list.size(); i++) {
         if (QFile::exists("./lang/" + Config.General.language_code_list[i] + ".qm") && (SettingsLanguageComboBox->findText(Config.General.language_name_list[i]) == -1) && Config.General.language_code_list[i] != "zh-CN") {
             SettingsLanguageComboBox->addItem(Config.General.language_name_list[i]);
+            qDebug() << "添加语言：\"" << Config.General.language_name_list[i] << "\"";
         }
         else if (Config.General.language_code_list[i] == "zh-CN" && (SettingsLanguageComboBox->findText("简体中文（中国大陆）") == -1)) {
             SettingsLanguageComboBox->addItem("简体中文（中国大陆）");
+            qDebug() << "添加语言：\"简体中文（中国大陆）\"";
         }
     }
 }
 
 // 语言切换函数
 void UniversalTimer2::changeLanguage() {
+    qDebug() << "切换语言……";
     Config.set(Config.General.language, Config.General.language_code_list.at(Config.General.language_name_list.indexOf(SettingsLanguageComboBox->currentText())));
     if (Config.General.language != "zh-CN") {
         bool success = Translator->load("./lang/" + Config.General.language + ".qm");
-        if (success) qApp->installTranslator(Translator);
+        if (success) {
+            qApp->installTranslator(Translator);
+            qDebug() << "语言切换成功";
+        }
         else qWarning() << "语言切换失败";
     }
     else {
         // 卸载
         qApp->removeTranslator(Translator);
+        qDebug() << "语言切换成功";
     }
+    
     updateText();
 }
 
@@ -831,6 +843,8 @@ void UniversalTimer2::updateSettings() {
 
 // 文本更新函数
 void UniversalTimer2::updateText() {
+    qDebug() << "更新文本……";
+
     // 更新系统托盘文本
     TrayIcon->setToolTip(tr("万能倒计时"));
     TrayIcon->contextMenu()->actions()[0]->setText(tr("设置"));
@@ -876,6 +890,8 @@ void UniversalTimer2::updateText() {
     SettingsSmallWindowPositionTopRightRadioButton->setText(tr("悬浮条位于右上")); // 悬浮条位置右上单选按钮文本
     // 关闭设置按钮
     SettingsCloseButton->setText(tr("关闭设置")); // 设置关闭按钮文本
+
+    qDebug() << "更新文本结束";
 }
 
 // 更新控件
