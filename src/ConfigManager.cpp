@@ -77,9 +77,9 @@ void ConfigManager::write() {
 
     if (Settings.status() != QSettings::NoError) {
         QMessageBox::critical(NULL, tr("错误"), tr("配置文件写入失败<br>错误代码：") + QString::number(Settings.status()), QMessageBox::Ok);
-        writeLog("ERROR", "配置文件写入失败，错误代码：" + QString::number(Settings.status()));
+        qWarning() << "配置文件写入失败，错误代码：" << QString::number(Settings.status());
     }
     else {
-        writeLog("INFO", "配置文件写入成功！");
+        qInfo() << "配置文件写入成功";
     }
 }

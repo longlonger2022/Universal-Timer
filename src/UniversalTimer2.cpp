@@ -615,7 +615,7 @@ void UniversalTimer2::changeLanguage() {
     if (Config.General.language != "zh-CN") {
         bool success = Translator->load("./lang/" + Config.General.language + ".qm");
         if (success) qApp->installTranslator(Translator);
-        else writeLog("ERROR", "语言切换失败");
+        else qWarning() << "语言切换失败";
     }
     else {
         // 卸载
