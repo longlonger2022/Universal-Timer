@@ -16,7 +16,7 @@ SettingsPageManager::SettingsPageManager(QWidget* parent, ConfigManager& cfg, Fl
                             subcontrol-origin: margin;\
                             subcontrol-position: top left;\
                         }\
-                        QLabel {\
+                        QLabel, QCheckBox, QRadioButton {\
                             color: white;\
                         }");
     
