@@ -223,12 +223,13 @@ void SettingsPageManager::connectEmissions() {
     connect(FloatingBarPositionButtonGroup, &QButtonGroup::buttonClicked, this, [this] {
         Config.set(Config.FloatingBar.floating_bar_position, FloatingBarPositionTopLeftRadioButton->isChecked() ? FloatingBarPosition::TopLeft : (FloatingBarPositionTopCenterRadioButton->isChecked() ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight));
         });
-    connect(FloatingBarHeightSpinBox, &QSpinBox::valueChanged, this, [this](int value) { // todo)) 解决修改悬浮条高度之后悬浮条圆角SpinBox上限不会修改的问题
+    connect(FloatingBarHeightSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
         Config.set(Config.FloatingBar.floating_bar_height, value);
         FloatingBar->setFixedHeight(value);
         QFont font;
         font.setPixelSize(value * GOLDEN_RATIO_INV);
         FloatingBar->Bar->setFont(font);
+        FloatingBarBorderRadiusSpinBox->setMaximum(value / 2);
         });
     connect(FloatingBarBorderRadiusSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
         Config.set(Config.FloatingBar.floating_bar_border_radius, value);
