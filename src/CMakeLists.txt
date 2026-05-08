@@ -25,6 +25,14 @@ set(PROJECT_SOURCES
     UniversalTimer2.cpp
     FloatingBar.h
     FloatingBar.cpp
+    FullscreenPagesManager.h
+    FullscreenPagesManager.cpp
+    ReminderPageManager.h
+    ReminderPageManager.cpp
+    SettingsPageManager.h
+    SettingsPageManager.cpp
+    WelcomePageManager.h
+    WelcomePageManager.cpp
     LogManager.h
     ConfigManager.h
     ConfigManager.cpp

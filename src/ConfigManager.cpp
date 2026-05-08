@@ -20,8 +20,6 @@ void ConfigManager::read() {
         General.target_date_time = Settings.value("target_date_time", QDateTime(QDate(2025, 6, 30), QTime(0, 0, 0))).toDateTime();
         General.update_interval = Settings.value("update_interval", 1000).toInt();
         General.language = Settings.value("language", "zh-CN").toString();
-        General.language_code_list = Settings.value("language_code_list", language_code_list_default).toStringList();
-        General.language_name_list = Settings.value("language_name_list", language_name_list_default).toStringList();
         Settings.endGroup();
 
         Settings.beginGroup("FloatingBar");
@@ -56,8 +54,6 @@ void ConfigManager::write() {
     Settings.setValue("target_date_time", General.target_date_time);
     Settings.setValue("update_interval", General.update_interval);
     Settings.setValue("language", General.language);
-    Settings.setValue("language_code_list", General.language_code_list);
-    Settings.setValue("language_name_list", General.language_name_list);
     Settings.endGroup();
 
     Settings.beginGroup("FloatingBar");
