@@ -21,7 +21,7 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     // Tray Icon
     TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
-    TrayIcon->setContextMenu(new QMenu);
+    TrayIcon->setContextMenu(new QMenu(tr("万能倒计时")));
     TrayIcon->contextMenu()->addAction(tr("设置"), FullscreenPages, &FullscreenPagesManager::showSettings); // 系统托盘菜单项：设置
     TrayIcon->contextMenu()->addAction(tr("刷新"), this, &UniversalTimer2::refresh); // 系统托盘菜单项：刷新
     TrayIcon->contextMenu()->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
@@ -37,8 +37,9 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
 
 UniversalTimer2::~UniversalTimer2()
 {
-    delete FullscreenPages;
-    delete FloatingBar;
+    FloatingBar->deleteLater();
+    FullscreenPages->deleteLater();
+    TrayIcon->contextMenu()->deleteLater();
 }
 
 
