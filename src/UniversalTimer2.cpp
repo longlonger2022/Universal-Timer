@@ -48,9 +48,11 @@ void UniversalTimer2::refresh() {
 
     qDebug() << "刷新……";
 
-    if (!QFile::exists("config.ini")) FullscreenPages->showWelcome();
-
-    config.read();
+    if (!QFile::exists("config.ini")) {
+        FullscreenPages->showWelcome();
+        config.write();
+    }
+    else config.read();
     
     // Floating Bar
     if (!config.floating_bar.is_show_floating_bar) FloatingBar->hide();
