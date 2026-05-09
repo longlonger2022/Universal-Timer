@@ -12,7 +12,6 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
 
     // Floating Bar
     FloatingBar = new FloatingBarClass;
-    FloatingBar->show();
 
     // Fullscreen Pages
     FullscreenPages = new FullscreenPagesManager(nullptr, config, FloatingBar);
@@ -54,9 +53,8 @@ void UniversalTimer2::refresh() {
     config.read();
     
     // Floating Bar
-    if (!config.floating_bar.is_show_floating_bar) {
-        FloatingBar->hide();
-    } // todo)) if not, show Floating Bar.
+    if (!config.floating_bar.is_show_floating_bar) FloatingBar->hide();
+    else FloatingBar->show();
     FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(config.floating_bar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
     FloatingBar->setWindowFlags((config.floating_bar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
     FloatingBar->setFixedHeight(config.floating_bar.floating_bar_height);
