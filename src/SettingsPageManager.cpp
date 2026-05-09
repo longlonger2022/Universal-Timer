@@ -5,7 +5,7 @@
 #include <QFormLayout>
 
 SettingsPageManager::SettingsPageManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
-    : QWidget(parent), Config(cfg), FloatingBar(bar)
+    : QWidget(parent), config(cfg), FloatingBar(bar)
 {
 
     this->setStyleSheet("QGroupBox {\
@@ -46,12 +46,12 @@ void SettingsPageManager::initializeObjects() {
     CloseButton = new QPushButton(tr("关闭设置"), this); // 设置关闭按钮
     
     // LineEdit
-    FloatingBarTextLineEdit = new QLineEdit(Config.FloatingBar.floating_bar_text, FloatingBarSettingsGroupBox); // 悬浮条文本输入框
-    ReminderTitleLineEdit = new QLineEdit(Config.Reminder.reminder_text, ReminderSettingsGroupBox); // 全屏提醒文本输入框
-    ReminderTextLineEdit = new QLineEdit(Config.Reminder.reminder_small_text, ReminderSettingsGroupBox); // 全屏提醒小文本输入框
+    FloatingBarTextLineEdit = new QLineEdit(config.floating_bar.floating_bar_text, FloatingBarSettingsGroupBox); // 悬浮条文本输入框
+    ReminderTitleLineEdit = new QLineEdit(config.reminder.reminder_text, ReminderSettingsGroupBox); // 全屏提醒文本输入框
+    ReminderTextLineEdit = new QLineEdit(config.reminder.reminder_small_text, ReminderSettingsGroupBox); // 全屏提醒小文本输入框
     
     // DateTimeEdit
-    TargetDateTimeEdit = new QDateTimeEdit(Config.General.target_date_time, GeneralSettingsGroupBox); // 目标时间输入框
+    TargetDateTimeEdit = new QDateTimeEdit(config.general.target_date_time, GeneralSettingsGroupBox); // 目标时间输入框
     
     // CheckBox
     IsShowReminderCheckBox = new QCheckBox(tr("是否显示全屏提醒"), ReminderSettingsGroupBox); // 播报全屏提醒复选框
@@ -92,42 +92,42 @@ void SettingsPageManager::initializeObjects() {
     FloatingBarPositionButtonGroup->setExclusive(true);
 
     // DateTimeEdit
-    TargetDateTimeEdit->setDateTime(Config.General.target_date_time);
+    TargetDateTimeEdit->setDateTime(config.general.target_date_time);
     TargetDateTimeEdit->setCalendarPopup(true);
     TargetDateTimeEdit->setDisplayFormat("yyyy-MM-dd hh:mm:ss"); // 设置显示格式
 
     // CheckBox
-    IsShowReminderCheckBox->setChecked(Config.Reminder.is_show_reminder);
-    IsShowFloatingBarCheckBox->setChecked(Config.FloatingBar.is_show_floating_bar);
+    IsShowReminderCheckBox->setChecked(config.reminder.is_show_reminder);
+    IsShowFloatingBarCheckBox->setChecked(config.floating_bar.is_show_floating_bar);
 
     // SpinBox
     ReminderRemainingDaysToPlayCountdownSoundSpinBox->setRange(INT_MIN, INT_MAX);
-    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setValue(Config.Reminder.remaining_days_to_play_countdown_sound);
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setValue(config.reminder.remaining_days_to_play_countdown_sound);
     ReminderRemainingDaysToPlayCountdownSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放倒计时音效前缀文本
     ReminderRemainingDaysToPlayCountdownSoundSpinBox->setSuffix(tr(" 天时播放倒计时提醒音")); // 剩余天数播放倒计时音效后缀文本
     ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setRange(INT_MIN, INT_MAX);
-    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setValue(Config.Reminder.remaining_days_to_play_heartbeat_sound);
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setValue(config.reminder.remaining_days_to_play_heartbeat_sound);
     ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放心跳音效前缀文本
     ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr(" 天时播放心跳提醒音")); // 剩余天数播放心跳音效后缀文本
     ReminderBlockShowTimesSpinBox->setRange(0, USHRT_MAX);
-    ReminderBlockShowTimesSpinBox->setValue(Config.Reminder.block_show_times);
+    ReminderBlockShowTimesSpinBox->setValue(config.reminder.block_show_times);
     ReminderBlockShowTimesSpinBox->setPrefix(tr("提醒音播放次数和方块闪烁次数：")); // 提醒音播放次数和方块闪烁次数前缀文本
     ReminderBlockShowTimesSpinBox->setSuffix(tr(" 次")); // 提醒音播放次数和方块闪烁次数后缀文本
     FloatingBarHeightSpinBox->setRange(0, 5714);
-    FloatingBarHeightSpinBox->setValue(Config.FloatingBar.floating_bar_height);
+    FloatingBarHeightSpinBox->setValue(config.floating_bar.floating_bar_height);
     FloatingBarHeightSpinBox->setPrefix(tr("悬浮条高度：")); // 悬浮条高度前缀文本
     FloatingBarHeightSpinBox->setSuffix(tr(" 像素")); // 悬浮条高度后缀文本
-    FloatingBarBorderRadiusSpinBox->setRange(0, Config.FloatingBar.floating_bar_height / 2);
-    FloatingBarBorderRadiusSpinBox->setValue(Config.FloatingBar.floating_bar_border_radius);
+    FloatingBarBorderRadiusSpinBox->setRange(0, config.floating_bar.floating_bar_height / 2);
+    FloatingBarBorderRadiusSpinBox->setValue(config.floating_bar.floating_bar_border_radius);
     FloatingBarBorderRadiusSpinBox->setPrefix(tr("悬浮条圆角半径：")); // 悬浮条圆角半径前缀文本
     FloatingBarBorderRadiusSpinBox->setSuffix(tr(" 像素")); // 悬浮条圆角半径后缀文本
 
     // RadioButton
-    FloatingBarOnTopRadioButton->setChecked(Config.FloatingBar.floating_bar_on_top);
-    FloatingBarOnBottomRadioButton->setChecked(!Config.FloatingBar.floating_bar_on_top);
-    FloatingBarPositionTopLeftRadioButton->setChecked(Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopLeft);
-    FloatingBarPositionTopCenterRadioButton->setChecked(Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopCenter);
-    FloatingBarPositionTopRightRadioButton->setChecked(Config.FloatingBar.floating_bar_position == FloatingBarPosition::TopRight);
+    FloatingBarOnTopRadioButton->setChecked(config.floating_bar.floating_bar_on_top);
+    FloatingBarOnBottomRadioButton->setChecked(!config.floating_bar.floating_bar_on_top);
+    FloatingBarPositionTopLeftRadioButton->setChecked(config.floating_bar.floating_bar_position == FloatingBarPosition::TopLeft);
+    FloatingBarPositionTopCenterRadioButton->setChecked(config.floating_bar.floating_bar_position == FloatingBarPosition::TopCenter);
+    FloatingBarPositionTopRightRadioButton->setChecked(config.floating_bar.floating_bar_position == FloatingBarPosition::TopRight);
 
 
     // Show
@@ -137,11 +137,11 @@ void SettingsPageManager::initializeObjects() {
     // Is show
     for (QWidget* child : FloatingBarSettingsGroupBox->findChildren<QWidget*>())
         if (child != IsShowFloatingBarCheckBox)
-            child->setEnabled(Config.FloatingBar.is_show_floating_bar);
+            child->setEnabled(config.floating_bar.is_show_floating_bar);
 
     for (QWidget* child : ReminderSettingsGroupBox->findChildren<QWidget*>())
         if (child != IsShowReminderCheckBox)
-            child->setEnabled(Config.Reminder.is_show_reminder);
+            child->setEnabled(config.reminder.is_show_reminder);
 
 }
 
@@ -191,40 +191,40 @@ void SettingsPageManager::connectEmissions() {
 
     // General
     connect(TargetDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [this](const QDateTime& date_time) {
-        Config.set(Config.General.target_date_time, date_time);
+        config.set(config.general.target_date_time, date_time);
         });
     // todo)) update_interval...
 
     // FloatingBar
     connect(IsShowFloatingBarCheckBox, &QCheckBox::checkStateChanged, this, [this] {
-        Config.set(Config.FloatingBar.is_show_floating_bar, IsShowFloatingBarCheckBox->isChecked());
-        if (!Config.FloatingBar.is_show_floating_bar) {
+        config.set(config.floating_bar.is_show_floating_bar, IsShowFloatingBarCheckBox->isChecked());
+        if (!config.floating_bar.is_show_floating_bar) {
             FloatingBar->hide();
         }
         else FloatingBar->show();
         for (QWidget* child : FloatingBarSettingsGroupBox->findChildren<QWidget*>())
             if (child != IsShowFloatingBarCheckBox)
-                child->setEnabled(Config.FloatingBar.is_show_floating_bar);
+                child->setEnabled(config.floating_bar.is_show_floating_bar);
         });
     connect(FloatingBarTextLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
-        Config.set(Config.FloatingBar.floating_bar_text, text);
+        config.set(config.floating_bar.floating_bar_text, text);
         });
     connect(FloatingBarLevelButtonGroup, &QButtonGroup::buttonClicked, this, [this] {
-        Config.set(Config.FloatingBar.floating_bar_on_top, FloatingBarOnTopRadioButton->isChecked());
-        FloatingBar->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        config.set(config.floating_bar.floating_bar_on_top, FloatingBarOnTopRadioButton->isChecked());
+        FloatingBar->setWindowFlags((config.floating_bar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
         FloatingBar->hide();
         FloatingBar->show();
 #ifdef Q_OS_WIN
-        if (Config.FloatingBar.floating_bar_on_top) {
+        if (config.floating_bar.floating_bar_on_top) {
             QMessageBox::information(FullScreenWidget, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
         }
 #endif
         });
     connect(FloatingBarPositionButtonGroup, &QButtonGroup::buttonClicked, this, [this] {
-        Config.set(Config.FloatingBar.floating_bar_position, FloatingBarPositionTopLeftRadioButton->isChecked() ? FloatingBarPosition::TopLeft : (FloatingBarPositionTopCenterRadioButton->isChecked() ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight));
+        config.set(config.floating_bar.floating_bar_position, FloatingBarPositionTopLeftRadioButton->isChecked() ? FloatingBarPosition::TopLeft : (FloatingBarPositionTopCenterRadioButton->isChecked() ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight));
         });
     connect(FloatingBarHeightSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
-        Config.set(Config.FloatingBar.floating_bar_height, value);
+        config.set(config.floating_bar.floating_bar_height, value);
         FloatingBar->setFixedHeight(value);
         QFont font;
         font.setPixelSize(value * GOLDEN_RATIO_INV);
@@ -232,31 +232,31 @@ void SettingsPageManager::connectEmissions() {
         FloatingBarBorderRadiusSpinBox->setMaximum(value / 2);
         });
     connect(FloatingBarBorderRadiusSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
-        Config.set(Config.FloatingBar.floating_bar_border_radius, value);
+        config.set(config.floating_bar.floating_bar_border_radius, value);
         FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(value) + "px; color: red;"); // 更新悬浮条样式
         });
 
     // Reminder
     connect(IsShowReminderCheckBox, &QCheckBox::checkStateChanged, this, [this] {
-        Config.set(Config.Reminder.is_show_reminder, IsShowReminderCheckBox->isChecked());
+        config.set(config.reminder.is_show_reminder, IsShowReminderCheckBox->isChecked());
         for (QWidget* child : ReminderSettingsGroupBox->findChildren<QWidget*>())
             if (child != IsShowReminderCheckBox)
-                child->setEnabled(Config.Reminder.is_show_reminder);
+                child->setEnabled(config.reminder.is_show_reminder);
         });
     connect(ReminderTitleLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
-        Config.set(Config.Reminder.reminder_text, text);
+        config.set(config.reminder.reminder_text, text);
         });
     connect(ReminderTextLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
-        Config.set(Config.Reminder.reminder_small_text, text);
+        config.set(config.reminder.reminder_small_text, text);
         });
     connect(ReminderRemainingDaysToPlayCountdownSoundSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
-        Config.set(Config.Reminder.remaining_days_to_play_countdown_sound, value);
+        config.set(config.reminder.remaining_days_to_play_countdown_sound, value);
         });
     connect(ReminderRemainingDaysToPlayHeartbeatSoundSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
-        Config.set(Config.Reminder.remaining_days_to_play_heartbeat_sound, value);
+        config.set(config.reminder.remaining_days_to_play_heartbeat_sound, value);
         });
     connect(ReminderBlockShowTimesSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
-        Config.set(Config.Reminder.block_show_times, value);
+        config.set(config.reminder.block_show_times, value);
         });
     connect(ReminderPreviewButton, &QPushButton::clicked, this, [this] {
         emit clickedReminderPreviewButton();

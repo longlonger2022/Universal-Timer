@@ -4,7 +4,7 @@
 #include <QTimer>
 
 FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
-    : QWidget(parent), Config(cfg), FloatingBar(bar)
+    : QWidget(parent), config(cfg), FloatingBar(bar)
 {
 
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -34,7 +34,7 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
     connect(SlideInAnimation, &QPropertyAnimation::finished, [this] {
         switch (fullscreen_pages_mode) {
             case FullscreenPagesMode::Reminder: {
-                ReminderPageManager* ReminderPage = new ReminderPageManager(this, Config);
+                ReminderPageManager* ReminderPage = new ReminderPageManager(this, config);
                 ReminderPage->move((this->width() - ReminderPage->width()) / 2, (this->height() - ReminderPage->height()) / 2);
                 SlideAnimationWidget->raise();
                 BackgroundWidget->show();
@@ -46,7 +46,7 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
                 break;
             }
             case FullscreenPagesMode::Settings: {
-                SettingsPageManager* SettingsPage = new SettingsPageManager(this, Config, FloatingBar);
+                SettingsPageManager* SettingsPage = new SettingsPageManager(this, config, FloatingBar);
                 SettingsPage->resize(this->size());
                 SlideAnimationWidget->raise();
                 BackgroundWidget->show();

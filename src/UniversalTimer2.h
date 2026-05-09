@@ -42,7 +42,7 @@ private:
     QTimer timer;
 
     // 配置
-    ConfigManager Config;
+    ConfigManager config;
 
     // 悬浮条
     FloatingBarClass* FloatingBar;

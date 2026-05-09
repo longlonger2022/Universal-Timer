@@ -43,7 +43,7 @@ private:
     FullscreenPagesMode fullscreen_pages_mode = FullscreenPagesMode::None;
 
     // Config
-    ConfigManager& Config;
+    ConfigManager& config;
 
     // FloatingBar
     FloatingBarClass* FloatingBar;

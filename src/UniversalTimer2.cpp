@@ -15,7 +15,7 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     FloatingBar->show();
 
     // Fullscreen Pages
-    FullscreenPages = new FullscreenPagesManager(nullptr, Config, FloatingBar);
+    FullscreenPages = new FullscreenPagesManager(nullptr, config, FloatingBar);
     FullscreenPages->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     FullscreenPages->resize(desktop.size());
 
@@ -32,7 +32,7 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     refresh();
 
     // Connections
-    timer.start(Config.General.update_interval);
+    timer.start(config.general.update_interval);
     connect(&timer, &QTimer::timeout, this, &UniversalTimer2::updateObjects);
 
 }
@@ -51,21 +51,21 @@ void UniversalTimer2::refresh() {
 
     if (!QFile::exists("config.ini")) FullscreenPages->showWelcome();
 
-    Config.read();
+    config.read();
     
-    // FloatingBar
-    if (!Config.FloatingBar.is_show_floating_bar) {
+    // Floating Bar
+    if (!config.floating_bar.is_show_floating_bar) {
         FloatingBar->hide();
-    } // todo)) if not, show FloatingBar.
-    FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(Config.FloatingBar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
-    FloatingBar->setWindowFlags((Config.FloatingBar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
-    FloatingBar->setFixedHeight(Config.FloatingBar.floating_bar_height);
+    } // todo)) if not, show Floating Bar.
+    FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(config.floating_bar.floating_bar_border_radius) + "px; color: red;"); // 更新悬浮条样式
+    FloatingBar->setWindowFlags((config.floating_bar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+    FloatingBar->setFixedHeight(config.floating_bar.floating_bar_height);
     QFont font;
-    font.setPixelSize(Config.FloatingBar.floating_bar_height * GOLDEN_RATIO_INV);
+    font.setPixelSize(config.floating_bar.floating_bar_height * GOLDEN_RATIO_INV);
     FloatingBar->Bar->setFont(font);
 
     // Reminder
-    if (Config.Reminder.is_show_reminder) {
+    if (config.reminder.is_show_reminder) {
         FullscreenPages->showReminder();
     }
 
@@ -76,15 +76,15 @@ void UniversalTimer2::refresh() {
 // 悬浮条更新函数
 void UniversalTimer2::updateFloatingBar() {
     // 更新标签文本
-    FloatingBar->Bar->setText(" " + Config.FloatingBar.floating_bar_text + QString::number(left_time / 86400) + tr("天", "Floating Bar") + QString::number((left_time % 86400) / 3600) + tr("时") + QString::number((left_time % 3600) / 60) + tr("分") + QString::number(left_time % 60) + tr("秒 "));
+    FloatingBar->Bar->setText(" " + config.floating_bar.floating_bar_text + QString::number(left_time / 86400) + tr("天", "Floating Bar") + QString::number((left_time % 86400) / 3600) + tr("时") + QString::number((left_time % 3600) / 60) + tr("分") + QString::number(left_time % 60) + tr("秒 "));
 
     // 更新大小
     FloatingBar->Bar->adjustSize();
-    FloatingBar->Bar->resize(FloatingBar->Bar->width() + 20, Config.FloatingBar.floating_bar_height);
+    FloatingBar->Bar->resize(FloatingBar->Bar->width() + 20, config.floating_bar.floating_bar_height);
     FloatingBar->adjustSize();
 
     // 更新位置
-    switch (Config.FloatingBar.floating_bar_position) {
+    switch (config.floating_bar.floating_bar_position) {
         case FloatingBarPosition::TopCenter:
             FloatingBar->move((desktop.width() - FloatingBar->width()) / 2, 0);
             break;
@@ -99,14 +99,14 @@ void UniversalTimer2::updateFloatingBar() {
 
 // 更新函数
 void UniversalTimer2::updateObjects() {
-    left_time = QDateTime::currentDateTime().secsTo(Config.General.target_date_time);
-    if (Config.FloatingBar.is_show_floating_bar) {
+    left_time = QDateTime::currentDateTime().secsTo(config.general.target_date_time);
+    if (config.floating_bar.is_show_floating_bar) {
         updateFloatingBar();
     }
     // 定时显示全屏提醒
-    if (Config.Reminder.is_show_reminder) {
+    if (config.reminder.is_show_reminder) {
         QTime current_time = QTime::currentTime();
-        if (Config.Reminder.reminder_time_list.contains(QTime(current_time.hour(), current_time.minute(), current_time.second()))) {
+        if (config.reminder.reminder_time_list.contains(QTime(current_time.hour(), current_time.minute(), current_time.second()))) {
             FullscreenPages->showReminder();
         }
     }

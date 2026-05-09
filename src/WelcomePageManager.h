@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ConfigManager.h"
-
 #include <QLabel>
 #include <QPushButton>
 #include <QResizeEvent>

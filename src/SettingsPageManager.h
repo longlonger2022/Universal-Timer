@@ -33,7 +33,7 @@ private:
     void connectEmissions();
 
     // Config
-    ConfigManager& Config;
+    ConfigManager& config;
 
     // FloatingBar
     FloatingBarClass* FloatingBar;

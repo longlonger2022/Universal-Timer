@@ -32,7 +32,7 @@ private:
     QFont font;
 
     // Config
-    const ConfigManager& Config;
+    const ConfigManager& config;
 
     // Sound
     QSoundEffect* CountdownSound; // 倒计时声音

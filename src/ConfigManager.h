@@ -2,7 +2,6 @@
 
 #include <QDateTime>
 #include <QSettings>
-#include <QMessageBox>
 #include <QFile>
 
 enum class FloatingBarPosition {
@@ -49,14 +48,14 @@ public:
     ConfigManager(QObject* parent = nullptr);
     ~ConfigManager();
 
-    GeneralConfigItems General;
+    GeneralConfigItems general;
 
-    FloatingBarConfigItems FloatingBar;
+    FloatingBarConfigItems floating_bar;
 
-    ReminderConfigItems Reminder;
+    ReminderConfigItems reminder;
 
-    template<typename T1, typename T2> void set(T1& Item, const T2& Variant) {
-        Item = Variant;
+    template<typename T1, typename T2> void set(T1& item, const T2& variant) {
+        item = variant;
         write();
     }
 

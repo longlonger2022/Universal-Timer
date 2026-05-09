@@ -3,7 +3,7 @@
 #include <QTimer>
 
 ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& cfg)
-    : QWidget(parent), Config(cfg)
+    : QWidget(parent), config(cfg)
 {
 
     assert(parent != nullptr && "parent cannot be nullptr");
@@ -26,7 +26,7 @@ ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& c
     HeartbeatSound->setSource(QUrl::fromLocalFile("./sounds/heartbeat.wav"));
     
 
-    left_time = QDateTime::currentDateTime().secsTo(Config.General.target_date_time);
+    left_time = QDateTime::currentDateTime().secsTo(config.general.target_date_time);
 
     initializeObjects();
     adjustObjects(parent, 1.0);
@@ -49,11 +49,11 @@ ReminderPageManager::~ReminderPageManager()
 {}
 
 void ReminderPageManager::initializeObjects() {
-    TitleLabel = new QLabel(Config.Reminder.reminder_text, this); // 全屏提醒自定义标题标签
+    TitleLabel = new QLabel(config.reminder.reminder_text, this); // 全屏提醒自定义标题标签
     ConjunctionLabel = new QLabel(tr("还剩"), this); // 全屏提醒剩余时间标签
     DaysLabel = new QLabel(tr("天", "Fullscreen Reminder"), this); // 全屏提醒剩余天数标签
     NumberLabel = new QLabel(QString::number(left_time / 86400), this); // 全屏提醒剩余天数数字标签
-    TextLabel = new QLabel(Config.Reminder.reminder_small_text + QString::number(left_time / 86400) + " DAYS", this); // 全屏提醒小文本标签
+    TextLabel = new QLabel(config.reminder.reminder_small_text + QString::number(left_time / 86400) + " DAYS", this); // 全屏提醒小文本标签
     ColorLabel = new QLabel(this); // 全屏提醒颜色标签
 
     NumberLabel->setStyleSheet("color: red;");
@@ -100,12 +100,12 @@ void ReminderPageManager::adjustObjects(const QWidget* parent,const qreal scale)
 }
 
 void ReminderPageManager::showBlocks(const unsigned short times) {
-    if (Config.Reminder.block_show_times != 0) {
-        if ((left_time / 86400) <= Config.Reminder.remaining_days_to_play_heartbeat_sound) {
+    if (config.reminder.block_show_times != 0) {
+        if ((left_time / 86400) <= config.reminder.remaining_days_to_play_heartbeat_sound) {
             CountdownSound->play();
             if (times % 2) HeartbeatSound->play();
         }
-        else if ((left_time / 86400) <= Config.Reminder.remaining_days_to_play_countdown_sound) CountdownSound->play();
+        else if ((left_time / 86400) <= config.reminder.remaining_days_to_play_countdown_sound) CountdownSound->play();
         for (int i = 0; i < ReminderBlockLabels.size(); i++) {
             ReminderBlockLabels[i]->show();
         }
@@ -114,7 +114,7 @@ void ReminderPageManager::showBlocks(const unsigned short times) {
                 ReminderBlockLabels[i]->hide();
             }
             QTimer::singleShot(500, this, [this, times] {
-                if (times < Config.Reminder.block_show_times) {
+                if (times < config.reminder.block_show_times) {
                     showBlocks(times + 1);
                 }
                 else emit finished();
