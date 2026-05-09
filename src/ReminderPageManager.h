@@ -22,7 +22,7 @@ Q_SIGNALS:
 private:
 
     void initializeObjects();
-    void adjustObjects(const QWidget* parent, const qreal scale);
+    void adjustObjects(const QWidget* parent, const qreal scale, const unsigned short depth = 0);
     void showBlocks(const unsigned short times = 1);
 
     // left time

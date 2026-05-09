@@ -68,7 +68,7 @@ void ReminderPageManager::initializeObjects() {
 
 }
 
-void ReminderPageManager::adjustObjects(const QWidget* parent,const qreal scale) {
+void ReminderPageManager::adjustObjects(const QWidget* parent, const qreal scale, const unsigned short depth) {
     font.setPixelSize(parent->height() * 0.2 * scale);
     TitleLabel->setFont(font);
     ConjunctionLabel->setFont(font);
@@ -83,19 +83,19 @@ void ReminderPageManager::adjustObjects(const QWidget* parent,const qreal scale)
     DaysLabel->adjustSize();
     NumberLabel->adjustSize();
     TextLabel->adjustSize();
-    ColorLabel->resize(parent->width() * 0.01, ConjunctionLabel->height());
+    ColorLabel->resize(parent->width() * 0.01 * scale, ConjunctionLabel->height());
 
     TitleLabel->move(0, 0);
-    ConjunctionLabel->move(TitleLabel->width() - ConjunctionLabel->width(), parent->height() * 0.2);
+    ConjunctionLabel->move(TitleLabel->width() - ConjunctionLabel->width(), TitleLabel->height());
     NumberLabel->move(TitleLabel->width(), ConjunctionLabel->y() + ConjunctionLabel->height() - NumberLabel->height() * 4 / 5);
     DaysLabel->move(NumberLabel->x() + NumberLabel->width(), ConjunctionLabel->y());
-    TextLabel->move(ConjunctionLabel->x() + parent->height() * 0.05, ConjunctionLabel->y() + ConjunctionLabel->height());
+    TextLabel->move(ConjunctionLabel->x() + parent->height() * 0.04 * scale, ConjunctionLabel->y() + ConjunctionLabel->height());
     ColorLabel->move(ConjunctionLabel->x() - ColorLabel->width(), ConjunctionLabel->y() + TextLabel->height());
     this->resize((DaysLabel->x() + DaysLabel->width()) > (TextLabel->x() + TextLabel->width()) ? (DaysLabel->x() + DaysLabel->width()) : (TextLabel->x() + TextLabel->width()), TextLabel->y() + TextLabel->height());
     
     // 当超过屏幕范围时
-    if (this->width() > parent->width()) {
-        adjustObjects(parent, scale - 0.1);
+    if (this->width() > (parent->width() + 2) && depth < 10) {
+        adjustObjects(parent, (qreal)parent->width() / (qreal)this->width(), depth + 1);
     }
 }
 
