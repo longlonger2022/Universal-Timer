@@ -1,4 +1,4 @@
-#include "DonatePage.h"
+#include "ui/DonatePage.h"
 
 DonatePageClass::DonatePageClass(QWidget* parent)
     : QLabel(parent)
