@@ -62,14 +62,14 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
                 break;
             }
             case FullscreenPagesMode::Welcome: {
-                WelcomePageManager* WelcomePage = new WelcomePageManager(this);
+                WelcomePageClass* WelcomePage = new WelcomePageClass(this);
                 WelcomePage->resize(this->size());
                 SlideAnimationWidget->raise();
                 BackgroundWidget->show();
                 WelcomePage->show();
-                connect(WelcomePage, &WelcomePageManager::finished, this, [this, WelcomePage] {
+                connect(WelcomePage, &WelcomePageClass::finished, this, [this, WelcomePage] {
                     FadeOutAnimation->start();
-                    connect(FadeOutAnimation, &QPropertyAnimation::finished, WelcomePage, &WelcomePageManager::deleteLater, Qt::SingleShotConnection);
+                    connect(FadeOutAnimation, &QPropertyAnimation::finished, WelcomePage, &WelcomePageClass::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
                 break;
             }

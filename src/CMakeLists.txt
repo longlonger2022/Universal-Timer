@@ -35,8 +35,8 @@ set(PROJECT_SOURCES
     ui/ReminderPageManager.cpp
     ui/SettingsPageManager.h
     ui/SettingsPageManager.cpp
-    ui/WelcomePageManager.h
-    ui/WelcomePageManager.cpp
+    ui/WelcomePage.h
+    ui/WelcomePage.cpp
     platform/Resource.rc
     platform/resource.h
     ../assets/UniversalTimer2.qrc

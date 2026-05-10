@@ -4,12 +4,12 @@
 #include <QPushButton>
 #include <QResizeEvent>
 
-class WelcomePageManager : public QWidget
+class WelcomePageClass : public QWidget
 {
     Q_OBJECT
 public:
-    WelcomePageManager(QWidget* parent = nullptr);
-    ~WelcomePageManager();
+    WelcomePageClass(QWidget* parent = nullptr);
+    ~WelcomePageClass();
 
 Q_SIGNALS:
     void finished();
