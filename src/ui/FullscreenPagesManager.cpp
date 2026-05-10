@@ -1,4 +1,7 @@
 #include "ui/FullscreenPagesManager.h"
+#include "ui/ReminderPage.h"
+#include "ui/SettingsPage.h"
+#include "ui/WelcomePage.h"
 
 #include <QTimer>
 
@@ -33,14 +36,14 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
     connect(SlideInAnimation, &QPropertyAnimation::finished, [this] {
         switch (fullscreen_pages_mode) {
             case FullscreenPagesMode::Reminder: {
-                ReminderPageManager* ReminderPage = new ReminderPageManager(this, config);
+                ReminderPageClass* ReminderPage = new ReminderPageClass(this, config);
                 ReminderPage->move((this->width() - ReminderPage->width()) / 2, (this->height() - ReminderPage->height()) / 2);
                 SlideAnimationWidget->raise();
                 BackgroundWidget->show();
                 ReminderPage->show();
-                connect(ReminderPage, &ReminderPageManager::finished, this, [this, ReminderPage] {
+                connect(ReminderPage, &ReminderPageClass::finished, this, [this, ReminderPage] {
                     FadeOutAnimation->start();
-                    connect(FadeOutAnimation, &QPropertyAnimation::finished, ReminderPage, &ReminderPageManager::deleteLater, Qt::SingleShotConnection);
+                    connect(FadeOutAnimation, &QPropertyAnimation::finished, ReminderPage, &ReminderPageClass::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
                 break;
             }

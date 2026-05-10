@@ -5,13 +5,13 @@
 #include <QLabel>
 #include <QSoundEffect>
 
-class ReminderPageManager : public QWidget
+class ReminderPageClass : public QWidget
 {
     Q_OBJECT
 
 public:
-    ReminderPageManager(QWidget* parent, const ConfigManager& cfg);
-    ~ReminderPageManager();
+    ReminderPageClass(QWidget* parent, const ConfigManager& cfg);
+    ~ReminderPageClass();
 
 Q_SIGNALS:
 

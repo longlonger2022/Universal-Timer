@@ -1,10 +1,10 @@
 #include "core/Global.h"
-#include "ui/ReminderPageManager.h"
+#include "ui/ReminderPage.h"
 
 #include <QTimer>
 #include <QDateTime>
 
-ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& cfg)
+ReminderPageClass::ReminderPageClass(QWidget* parent, const ConfigManager& cfg)
     : QWidget(parent), config(cfg)
 {
 
@@ -45,14 +45,14 @@ ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& c
     QTimer::singleShot(1000, [this] { showBlocks(); });
 }
 
-ReminderPageManager::~ReminderPageManager()
+ReminderPageClass::~ReminderPageClass()
 {
     for (int i = 0; i < 4; i++) {
         ReminderBlockLabels[i]->deleteLater();
     }
 }
 
-void ReminderPageManager::initializeObjects() {
+void ReminderPageClass::initializeObjects() {
     TitleLabel = new QLabel(config.reminder.reminder_text, this); // 全屏提醒自定义标题标签
     ConjunctionLabel = new QLabel(tr("还剩"), this); // 全屏提醒剩余时间标签
     DaysLabel = new QLabel(tr("天", "Fullscreen Reminder"), this); // 全屏提醒剩余天数标签
@@ -72,7 +72,7 @@ void ReminderPageManager::initializeObjects() {
 
 }
 
-void ReminderPageManager::adjustObjects(const QWidget* parent, const qreal scale, const unsigned short depth) {
+void ReminderPageClass::adjustObjects(const QWidget* parent, const qreal scale, const unsigned short depth) {
     font.setPixelSize(parent->height() * 0.2 * scale);
     TitleLabel->setFont(font);
     ConjunctionLabel->setFont(font);
@@ -103,7 +103,7 @@ void ReminderPageManager::adjustObjects(const QWidget* parent, const qreal scale
     }
 }
 
-void ReminderPageManager::showBlocks(const unsigned short times) {
+void ReminderPageClass::showBlocks(const unsigned short times) {
     if (config.reminder.block_show_times != 0) {
         if ((left_time / 86400) <= config.reminder.remaining_days_to_play_heartbeat_sound) {
             CountdownSound->play();

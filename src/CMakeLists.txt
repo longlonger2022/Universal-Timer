@@ -31,8 +31,8 @@ set(PROJECT_SOURCES
     ui/FloatingBar.cpp
     ui/FullscreenPagesManager.h
     ui/FullscreenPagesManager.cpp
-    ui/ReminderPageManager.h
-    ui/ReminderPageManager.cpp
+    ui/ReminderPage.h
+    ui/ReminderPage.cpp
     ui/SettingsPage.h
     ui/SettingsPage.cpp
     ui/WelcomePage.h
