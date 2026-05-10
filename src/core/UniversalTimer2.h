@@ -27,9 +27,6 @@ private:
     void updateObjects(); // 更新对象
 
 
-    // 剩余时间
-    int left_time = 0;
-
     // 屏幕分辨率
     QRect desktop;
 

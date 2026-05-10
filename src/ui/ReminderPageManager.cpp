@@ -1,3 +1,4 @@
+#include "core/Global.h"
 #include "ui/ReminderPageManager.h"
 
 #include <QTimer>
@@ -26,8 +27,6 @@ ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& c
     HeartbeatSound = new QSoundEffect(this);
     HeartbeatSound->setSource(QUrl::fromLocalFile("./sounds/heartbeat.wav"));
     
-
-    left_time = QDateTime::currentDateTime().secsTo(config.general.target_date_time);
 
     initializeObjects();
     adjustObjects(parent, 1.0);

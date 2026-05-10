@@ -50,6 +50,8 @@ void UniversalTimer2::refresh() {
 
     qDebug() << "刷新……";
 
+    left_time = QDateTime::currentDateTime().secsTo(config.general.target_date_time);
+
     if (!QFile::exists("config.ini")) {
         FullscreenPages->showWelcome();
         config.write();
