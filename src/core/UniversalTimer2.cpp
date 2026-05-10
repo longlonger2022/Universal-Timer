@@ -21,6 +21,11 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     FullscreenPages->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     FullscreenPages->resize(desktop.size());
 
+    // About Page
+    AboutPage = new AboutPageClass;
+    AboutPage->resize(desktop.size() / 2);
+    AboutPage->move((desktop.width() - AboutPage->width()) / 2, (desktop.height() - AboutPage->height()) / 2);
+
     // Tray Icon
     TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
@@ -32,6 +37,7 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
         DonatePage->move((desktop.width() - DonatePage->width()) / 2, (desktop.height() - DonatePage->height()) / 2);
         DonatePage->show();
         });
+    TrayIcon->contextMenu()->addAction(tr("关于"), AboutPage, &AboutPageClass::showNormal);
     TrayIcon->contextMenu()->addAction(tr("刷新"), this, &UniversalTimer2::refresh); // 系统托盘菜单项：刷新
     TrayIcon->contextMenu()->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->show();

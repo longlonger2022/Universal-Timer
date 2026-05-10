@@ -3,6 +3,7 @@
 #include "core/ConfigManager.h"
 #include "ui/FloatingBar.h"
 #include "ui/FullscreenPagesManager.h"
+#include "ui/AboutPage.h"
 
 #include <QSystemTrayIcon>
 #include <QTimer>
@@ -42,6 +43,8 @@ private:
     // 全屏窗口
     FullscreenPagesManager* FullscreenPages;
 
+    // About Page
+    AboutPageClass* AboutPage;
 
     // SystemTrayIcon
     QSystemTrayIcon* TrayIcon; // 系统托盘图标
