@@ -41,7 +41,7 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
                 ReminderPage->show();
                 connect(ReminderPage, &ReminderPageManager::finished, this, [this, ReminderPage] {
                     FadeOutAnimation->start();
-                    connect(FadeOutAnimation, &QPropertyAnimation::finished, ReminderPage, &ReminderPageManager::deleteLater);
+                    connect(FadeOutAnimation, &QPropertyAnimation::finished, ReminderPage, &ReminderPageManager::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
                 break;
             }
@@ -70,7 +70,7 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
                 WelcomePage->show();
                 connect(WelcomePage, &WelcomePageManager::finished, this, [this, WelcomePage] {
                     FadeOutAnimation->start();
-                    connect(FadeOutAnimation, &QPropertyAnimation::finished, WelcomePage, &WelcomePageManager::deleteLater);
+                    connect(FadeOutAnimation, &QPropertyAnimation::finished, WelcomePage, &WelcomePageManager::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
                 break;
             }
