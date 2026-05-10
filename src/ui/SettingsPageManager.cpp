@@ -216,7 +216,7 @@ void SettingsPageManager::connectEmissions() {
         FloatingBar->show();
 #ifdef Q_OS_WIN
         if (config.floating_bar.floating_bar_on_top) {
-            QMessageBox::information(FullScreenWidget, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
+            QMessageBox::information(this, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
         }
 #endif
         });
