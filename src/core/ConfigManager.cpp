@@ -3,8 +3,6 @@
 
 #include <QObject>
 #include <QMessageBox>
-#include <QSettings>
-#include <QFile>
 
 ConfigManager::ConfigManager()
 {
@@ -18,8 +16,6 @@ ConfigManager::~ConfigManager()
 void ConfigManager::read() {
     if (QFile::exists("config.ini")) {
         qDebug() << "读取配置文件……";
-
-        QSettings Settings("config.ini", QSettings::IniFormat);
 
         Settings.beginGroup("general");
         general.target_date_time = Settings.value("target_date_time", QDateTime(QDate(2025, 6, 30), QTime(0, 0, 0))).toDateTime();
@@ -52,8 +48,6 @@ void ConfigManager::read() {
 
 void ConfigManager::write() {
     qDebug() << "写入配置文件……";
-
-    QSettings Settings("config.ini", QSettings::IniFormat);
 
     Settings.beginGroup("general");
     Settings.setValue("target_date_time", general.target_date_time);

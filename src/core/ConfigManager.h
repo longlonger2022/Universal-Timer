@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QDateTime>
+#include <QSettings>
 
 enum class FloatingBarPosition {
     TopLeft,
@@ -39,6 +40,8 @@ private:
         QVariantList reminder_time_list = { QTime(8, 13), QTime(9, 3), QTime(9, 53), QTime(10, 43), QTime(11, 38), QTime(14, 20), QTime(15, 3), QTime(15, 53), QTime(16, 43), QTime(18, 3) }; // 时间列表
     };
 
+
+    QSettings Settings = QSettings("config.ini", QSettings::IniFormat);
 
 
 public:
