@@ -21,27 +21,29 @@ qt_standard_project_setup()
 
 set(PROJECT_SOURCES
     main.cpp
-    UniversalTimer2.h
-    UniversalTimer2.cpp
-    FloatingBar.h
-    FloatingBar.cpp
-    FullscreenPagesManager.h
-    FullscreenPagesManager.cpp
-    ReminderPageManager.h
-    ReminderPageManager.cpp
-    SettingsPageManager.h
-    SettingsPageManager.cpp
-    WelcomePageManager.h
-    WelcomePageManager.cpp
-    LogManager.h
-    ConfigManager.h
-    ConfigManager.cpp
-    Resource.rc
-    resource.h
+    core/UniversalTimer2.h
+    core/UniversalTimer2.cpp
+    core/LogManager.h
+    core/ConfigManager.h
+    core/ConfigManager.cpp
+    ui/FloatingBar.h
+    ui/FloatingBar.cpp
+    ui/FullscreenPagesManager.h
+    ui/FullscreenPagesManager.cpp
+    ui/ReminderPageManager.h
+    ui/ReminderPageManager.cpp
+    ui/SettingsPageManager.h
+    ui/SettingsPageManager.cpp
+    ui/WelcomePageManager.h
+    ui/WelcomePageManager.cpp
+    platform/Resource.rc
+    platform/resource.h
     ../assets/UniversalTimer2.qrc
 )
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES

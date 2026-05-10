@@ -1,4 +1,4 @@
-﻿#include "UniversalTimer2.h"
+﻿#include "core/UniversalTimer2.h"
 
 #include <QApplication>
 #include <QScreen>

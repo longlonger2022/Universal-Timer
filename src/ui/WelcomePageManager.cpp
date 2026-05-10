@@ -1,4 +1,4 @@
-#include "WelcomePageManager.h"
+#include "ui/WelcomePageManager.h"
 
 WelcomePageManager::WelcomePageManager(QWidget* parent)
     : QWidget(parent)

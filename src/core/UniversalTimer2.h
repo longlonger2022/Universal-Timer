@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "LogManager.h"
-#include "ConfigManager.h"
-#include "FloatingBar.h"
-#include "FullscreenPagesManager.h"
+#include "core/LogManager.h"
+#include "core/ConfigManager.h"
+#include "ui/FloatingBar.h"
+#include "ui/FullscreenPagesManager.h"
 
 #include <QtWidgets/QWidget>
 #include <numbers>

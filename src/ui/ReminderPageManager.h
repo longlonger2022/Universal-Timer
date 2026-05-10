@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ConfigManager.h"
+#include "core/ConfigManager.h"
 
 #include <QLabel>
 #include <QApplication>

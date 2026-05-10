@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ConfigManager.h"
-#include "LogManager.h"
-#include "FloatingBar.h"
-#include "ReminderPageManager.h"
-#include "SettingsPageManager.h"
-#include "WelcomePageManager.h"
+#include "core/ConfigManager.h"
+#include "core/LogManager.h"
+#include "ui/FloatingBar.h"
+#include "ui/ReminderPageManager.h"
+#include "ui/SettingsPageManager.h"
+#include "ui/WelcomePageManager.h"
 
 #include <QWidget>
 #include <QResizeEvent>

@@ -1,4 +1,4 @@
-#include "FullscreenPagesManager.h"
+#include "ui/FullscreenPagesManager.h"
 
 #include <QVBoxLayout>
 #include <QTimer>

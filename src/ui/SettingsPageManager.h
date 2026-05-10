@@ -1,7 +1,7 @@
 #pragma once
 
-#include "FloatingBar.h"
-#include "ConfigManager.h"
+#include "core/ConfigManager.h"
+#include "ui/FloatingBar.h"
 
 #include <QGroupBox>
 #include <QLineEdit>

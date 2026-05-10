@@ -1,5 +1,5 @@
-#include "ConfigManager.h"
-#include "LogManager.h"
+#include "core/ConfigManager.h"
+#include "core/LogManager.h"
 
 #include <QMessageBox>
 

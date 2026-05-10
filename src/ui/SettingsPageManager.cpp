@@ -1,5 +1,5 @@
-#include "SettingsPageManager.h"
-#include "UniversalTimer2.h"
+#include "core/UniversalTimer2.h"
+#include "ui/SettingsPageManager.h"
 
 #include <QVBoxLayout>
 #include <QFormLayout>
