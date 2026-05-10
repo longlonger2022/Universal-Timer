@@ -1,11 +1,12 @@
 #include "core/ConfigManager.h"
 #include "core/LogManager.h"
 
+#include <QObject>
 #include <QMessageBox>
 #include <QSettings>
 #include <QFile>
 
-ConfigManager::ConfigManager(QObject* parent) : QObject(parent)
+ConfigManager::ConfigManager()
 {
     read();
 }
@@ -82,7 +83,7 @@ void ConfigManager::write() {
     Settings.sync();
 
     if (Settings.status() != QSettings::NoError) {
-        QMessageBox::critical(NULL, tr("错误"), tr("配置文件写入失败<br>错误代码：") + QString::number(Settings.status()), QMessageBox::Ok);
+        QMessageBox::critical(NULL, QObject::tr("错误"), QObject::tr("配置文件写入失败<br>错误代码：") + QString::number(Settings.status()), QMessageBox::Ok);
         qWarning() << "配置文件写入失败，错误代码：" << QString::number(Settings.status());
     }
     else {

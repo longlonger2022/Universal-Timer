@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QObject>
 #include <QDateTime>
 
 enum class FloatingBarPosition {
@@ -10,9 +9,8 @@ enum class FloatingBarPosition {
 };
 
 
-class ConfigManager : public QObject
+class ConfigManager
 {
-    Q_OBJECT
 
 private:
 
@@ -44,7 +42,7 @@ private:
 
 
 public:
-    ConfigManager(QObject* parent = nullptr);
+    ConfigManager();
     ~ConfigManager();
 
     GeneralConfigItems general;
