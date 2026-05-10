@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>images/background/Universal-Timer.png</file>
         <file>images/icons/Universal-Timer-2_icon.512px.png</file>
+        <file>images/qrcode/WeChatDonate.png</file>
     </qresource>
 </RCC>

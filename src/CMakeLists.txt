@@ -37,6 +37,8 @@ set(PROJECT_SOURCES
     ui/SettingsPage.cpp
     ui/WelcomePage.h
     ui/WelcomePage.cpp
+    ui/DonatePage.h
+    ui/DonatePage.cpp
     platform/Resource.rc
     platform/resource.h
     ../assets/UniversalTimer2.qrc

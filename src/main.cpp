@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
     defaultMessageHandler = qInstallMessageHandler(customMessageHandler);
     QApplication a(argc, argv);
+    a.setQuitOnLastWindowClosed(false);
     UniversalTimer2 w;
     return a.exec();
 }

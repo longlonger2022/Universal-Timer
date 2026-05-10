@@ -1,6 +1,7 @@
 ﻿#include "core/UniversalTimer2.h"
 #include "core/LogManager.h"
 #include "core/Global.h"
+#include "ui/DonatePage.h"
 
 #include <QApplication>
 #include <QScreen>
@@ -25,6 +26,12 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     TrayIcon->setToolTip(tr("万能倒计时"));
     TrayIcon->setContextMenu(new QMenu(tr("万能倒计时")));
     TrayIcon->contextMenu()->addAction(tr("设置"), FullscreenPages, &FullscreenPagesManager::showSettings); // 系统托盘菜单项：设置
+    TrayIcon->contextMenu()->addAction(tr("赞助"), [this] {
+        DonatePageClass* DonatePage = new DonatePageClass;
+        DonatePage->resize(DonatePage->width(), desktop.height() / 2);
+        DonatePage->move((desktop.width() - DonatePage->width()) / 2, (desktop.height() - DonatePage->height()) / 2);
+        DonatePage->show();
+        });
     TrayIcon->contextMenu()->addAction(tr("刷新"), this, &UniversalTimer2::refresh); // 系统托盘菜单项：刷新
     TrayIcon->contextMenu()->addAction(tr("退出"), this, &qApp->quit); // 系统托盘菜单项：退出
     TrayIcon->show();
