@@ -87,7 +87,7 @@ void ReminderPageManager::adjustObjects(const QWidget* parent, const qreal scale
 
     TitleLabel->move(0, 0);
     ConjunctionLabel->move(TitleLabel->width() - ConjunctionLabel->width(), TitleLabel->height());
-    NumberLabel->move(TitleLabel->width(), ConjunctionLabel->y() + ConjunctionLabel->height() - NumberLabel->height() * 4 / 5);
+    NumberLabel->move(TitleLabel->width(), ConjunctionLabel->y() + ConjunctionLabel->height() - NumberLabel->height() * 0.85);
     DaysLabel->move(NumberLabel->x() + NumberLabel->width(), ConjunctionLabel->y());
     TextLabel->move(ConjunctionLabel->x() + parent->height() * 0.04 * scale, ConjunctionLabel->y() + ConjunctionLabel->height());
     ColorLabel->move(ConjunctionLabel->x() - ColorLabel->width(), ConjunctionLabel->y() + TextLabel->height());
