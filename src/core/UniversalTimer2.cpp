@@ -1,6 +1,6 @@
 ﻿#include "core/UniversalTimer2.h"
 #include "core/LogManager.h"
-#include "core/Constants.h"
+#include "core/Global.h"
 
 #include <QApplication>
 #include <QScreen>

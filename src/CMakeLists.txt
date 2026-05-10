@@ -26,7 +26,7 @@ set(PROJECT_SOURCES
     core/LogManager.h
     core/ConfigManager.h
     core/ConfigManager.cpp
-    core/Constants.h
+    core/Global.h
     ui/FloatingBar.h
     ui/FloatingBar.cpp
     ui/FullscreenPagesManager.h

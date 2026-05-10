@@ -1,4 +1,4 @@
-#include "core/Constants.h"
+#include "core/Global.h"
 #include "ui/SettingsPageManager.h"
 
 #include <QVBoxLayout>
