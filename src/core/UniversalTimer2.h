@@ -6,11 +6,8 @@
 #include "ui/FullscreenPagesManager.h"
 
 #include <QtWidgets/QWidget>
-#include <numbers>
 #include <QSystemTrayIcon>
 #include <QTimer>
-
-inline constexpr double GOLDEN_RATIO_INV = 1.0 / std::numbers::phi; // 黄金比例倒数
 
 class UniversalTimer2 : public QObject
 {

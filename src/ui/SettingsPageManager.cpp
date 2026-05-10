@@ -1,4 +1,4 @@
-#include "core/UniversalTimer2.h"
+#include "core/Constants.h"
 #include "ui/SettingsPageManager.h"
 
 #include <QVBoxLayout>
