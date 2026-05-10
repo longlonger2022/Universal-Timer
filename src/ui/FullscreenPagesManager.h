@@ -3,7 +3,7 @@
 #include "core/ConfigManager.h"
 #include "ui/FloatingBar.h"
 #include "ui/ReminderPageManager.h"
-#include "ui/SettingsPageManager.h"
+#include "ui/SettingsPage.h"
 #include "ui/WelcomePage.h"
 
 #include <QWidget>

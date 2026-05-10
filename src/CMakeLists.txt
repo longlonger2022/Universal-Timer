@@ -33,8 +33,8 @@ set(PROJECT_SOURCES
     ui/FullscreenPagesManager.cpp
     ui/ReminderPageManager.h
     ui/ReminderPageManager.cpp
-    ui/SettingsPageManager.h
-    ui/SettingsPageManager.cpp
+    ui/SettingsPage.h
+    ui/SettingsPage.cpp
     ui/WelcomePage.h
     ui/WelcomePage.cpp
     platform/Resource.rc

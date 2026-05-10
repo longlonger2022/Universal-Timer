@@ -45,19 +45,19 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
                 break;
             }
             case FullscreenPagesMode::Settings: {
-                SettingsPageManager* SettingsPage = new SettingsPageManager(this, config, FloatingBar);
+                SettingsPageClass* SettingsPage = new SettingsPageClass(this, config, FloatingBar);
                 SettingsPage->resize(this->size());
                 SlideAnimationWidget->raise();
                 BackgroundWidget->show();
                 SettingsPage->show();
-                connect(SettingsPage, &SettingsPageManager::clickedCloseButton, this, [this, SettingsPage] {
+                connect(SettingsPage, &SettingsPageClass::clickedCloseButton, this, [this, SettingsPage] {
                     FadeOutAnimation->start();
-                    connect(FadeOutAnimation, &QPropertyAnimation::finished, SettingsPage, &SettingsPageManager::deleteLater, Qt::SingleShotConnection);
+                    connect(FadeOutAnimation, &QPropertyAnimation::finished, SettingsPage, &SettingsPageClass::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
-                connect(SettingsPage, &SettingsPageManager::clickedReminderPreviewButton, this, [this, SettingsPage] {
+                connect(SettingsPage, &SettingsPageClass::clickedReminderPreviewButton, this, [this, SettingsPage] {
                     fullscreen_pages_mode = FullscreenPagesMode::None;
                     showReminder();
-                    connect(SlideInAnimation, &QPropertyAnimation::finished, SettingsPage, &SettingsPageManager::deleteLater, Qt::SingleShotConnection);
+                    connect(SlideInAnimation, &QPropertyAnimation::finished, SettingsPage, &SettingsPageClass::deleteLater, Qt::SingleShotConnection);
                     }, Qt::SingleShotConnection);
                 break;
             }

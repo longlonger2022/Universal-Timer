@@ -1,10 +1,10 @@
 #include "core/Global.h"
-#include "ui/SettingsPageManager.h"
+#include "ui/SettingsPage.h"
 
 #include <QVBoxLayout>
 #include <QFormLayout>
 
-SettingsPageManager::SettingsPageManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
+SettingsPageClass::SettingsPageClass(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
     : QWidget(parent), config(cfg), FloatingBar(bar)
 {
 
@@ -26,10 +26,10 @@ SettingsPageManager::SettingsPageManager(QWidget* parent, ConfigManager& cfg, Fl
 
 }
 
-SettingsPageManager::~SettingsPageManager()
+SettingsPageClass::~SettingsPageClass()
 {}
 
-void SettingsPageManager::initializeObjects() {
+void SettingsPageClass::initializeObjects() {
 
     // Creates
     // GroupBox
@@ -145,7 +145,7 @@ void SettingsPageManager::initializeObjects() {
 
 }
 
-void SettingsPageManager::adjustObjects() {
+void SettingsPageClass::adjustObjects() {
 
 
     QFormLayout* GeneralSettingsFormLayout = new QFormLayout(GeneralSettingsGroupBox);
@@ -187,7 +187,7 @@ void SettingsPageManager::adjustObjects() {
 
 }
 
-void SettingsPageManager::connectEmissions() {
+void SettingsPageClass::connectEmissions() {
 
     // General
     connect(TargetDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [this](const QDateTime& date_time) {

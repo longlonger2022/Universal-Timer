@@ -14,13 +14,13 @@
 #include <QButtonGroup>
 
 
-class SettingsPageManager : public QWidget
+class SettingsPageClass : public QWidget
 {
     Q_OBJECT
 
 public:
-    SettingsPageManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar);
-    ~SettingsPageManager();
+    SettingsPageClass(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar);
+    ~SettingsPageClass();
 
 Q_SIGNALS:
     void clickedReminderPreviewButton();
