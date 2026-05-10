@@ -86,10 +86,6 @@ FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& c
 FullscreenPagesManager::~FullscreenPagesManager()
 {}
 
-void FullscreenPagesManager::refresh() {
-
-}
-
 void FullscreenPagesManager::showReminder() {
     if (fullscreen_pages_mode == FullscreenPagesMode::None) {
         fullscreen_pages_mode = FullscreenPagesMode::Reminder;

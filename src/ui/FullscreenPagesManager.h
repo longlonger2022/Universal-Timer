@@ -20,7 +20,6 @@ public:
     FullscreenPagesManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar);
     ~FullscreenPagesManager();
 
-    void refresh();
     void showReminder();
     void showSettings();
     void showWelcome();
