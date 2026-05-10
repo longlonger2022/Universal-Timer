@@ -58,3 +58,6 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Multimedia
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:Release>:QT_NO_DEBUG_OUTPUT>
+)
