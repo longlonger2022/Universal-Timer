@@ -3,6 +3,9 @@
 DonatePageClass::DonatePageClass(QWidget* parent)
     : QLabel(parent)
 {
+
+    this->setWindowTitle(tr("赞助"));
+
     OriginalPixmap = QPixmap(":/images/qrcode/WeChatDonate.png");
     if (!OriginalPixmap.isNull()) {
         // 初始按当前尺寸缩放，保持比例
