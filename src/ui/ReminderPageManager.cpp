@@ -46,7 +46,11 @@ ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& c
 }
 
 ReminderPageManager::~ReminderPageManager()
-{}
+{
+    for (int i = 0; i < 4; i++) {
+        ReminderBlockLabels[i]->deleteLater();
+    }
+}
 
 void ReminderPageManager::initializeObjects() {
     TitleLabel = new QLabel(config.reminder.reminder_text, this); // 全屏提醒自定义标题标签
