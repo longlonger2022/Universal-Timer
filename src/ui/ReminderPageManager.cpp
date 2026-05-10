@@ -1,6 +1,7 @@
 #include "ui/ReminderPageManager.h"
 
 #include <QTimer>
+#include <QDateTime>
 
 ReminderPageManager::ReminderPageManager(QWidget* parent, const ConfigManager& cfg)
     : QWidget(parent), config(cfg)

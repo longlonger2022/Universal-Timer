@@ -3,8 +3,6 @@
 #include "core/ConfigManager.h"
 
 #include <QLabel>
-#include <QApplication>
-#include <QScreen>
 #include <QSoundEffect>
 
 class ReminderPageManager : public QWidget

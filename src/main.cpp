@@ -1,6 +1,7 @@
 #include "core/UniversalTimer2.h"
 #include "core/LogManager.h"
-#include <QtWidgets/QApplication>
+
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {

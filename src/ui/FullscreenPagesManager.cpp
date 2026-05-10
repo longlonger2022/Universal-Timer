@@ -1,6 +1,5 @@
 #include "ui/FullscreenPagesManager.h"
 
-#include <QVBoxLayout>
 #include <QTimer>
 
 FullscreenPagesManager::FullscreenPagesManager(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)

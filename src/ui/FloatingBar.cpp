@@ -1,6 +1,4 @@
 #include "FloatingBar.h"
-#include <QScreen>
-#include <QApplication>
 
 FloatingBarClass::FloatingBarClass(QWidget* parent)
     : QWidget(parent)

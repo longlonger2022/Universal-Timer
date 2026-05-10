@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/ConfigManager.h"
-#include "core/LogManager.h"
 #include "ui/FloatingBar.h"
 #include "ui/ReminderPageManager.h"
 #include "ui/SettingsPageManager.h"

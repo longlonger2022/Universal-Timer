@@ -2,6 +2,8 @@
 #include "core/LogManager.h"
 
 #include <QMessageBox>
+#include <QSettings>
+#include <QFile>
 
 ConfigManager::ConfigManager(QObject* parent) : QObject(parent)
 {

@@ -1,8 +1,7 @@
 #pragma once
 
+#include <QObject>
 #include <QDateTime>
-#include <QSettings>
-#include <QFile>
 
 enum class FloatingBarPosition {
     TopLeft,

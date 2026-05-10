@@ -1,11 +1,9 @@
 ﻿#pragma once
 
-#include "core/LogManager.h"
 #include "core/ConfigManager.h"
 #include "ui/FloatingBar.h"
 #include "ui/FullscreenPagesManager.h"
 
-#include <QtWidgets/QWidget>
 #include <QSystemTrayIcon>
 #include <QTimer>
 

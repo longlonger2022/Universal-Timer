@@ -1,4 +1,5 @@
 ﻿#include "core/UniversalTimer2.h"
+#include "core/LogManager.h"
 #include "core/Constants.h"
 
 #include <QApplication>
