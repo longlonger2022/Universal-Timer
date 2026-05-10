@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ui/ScalableLabel.h"
+
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
@@ -13,21 +15,6 @@ class AboutPageClass : public QWidget
 public:
     AboutPageClass(QWidget* parent = nullptr);
     ~AboutPageClass();
-
-    class ScalableLabel : public QLabel
-    {
-
-    public:
-        ScalableLabel(QWidget* parent = nullptr);
-        ~ScalableLabel();
-
-    protected:
-        void resizeEvent(QResizeEvent* event) override;
-
-    private:
-        QPixmap OriginalPixmap;
-
-    };
 
 private:
 

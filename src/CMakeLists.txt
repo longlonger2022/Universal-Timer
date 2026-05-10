@@ -41,6 +41,8 @@ set(PROJECT_SOURCES
     ui/AboutPage.cpp
     ui/DonatePage.h
     ui/DonatePage.cpp
+    ui/ScalableLabel.h
+    ui/ScalableLabel.cpp
     platform/Resource.rc
     platform/resource.h
     ../assets/UniversalTimer2.qrc
