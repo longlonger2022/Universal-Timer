@@ -39,8 +39,20 @@ void ConfigManager::read() {
         reminder.remaining_days_to_play_countdown_sound = Settings.value("remaining_days_to_play_countdown_sound", 30).toInt();
         reminder.remaining_days_to_play_heartbeat_sound = Settings.value("remaining_days_to_play_heartbeat_sound", 14).toInt();
         reminder.block_show_times = Settings.value("block_show_times", 4).toUInt();
-        reminder.reminder_time_list = Settings.value("reminder_time_list").toList();
+        //reminder.reminder_time_list = Settings.value("reminder_time_list").toList(); // 暂时使用另一方法读取时间列表 --- IGNORE ---
         Settings.endGroup();
+
+        QFile time_list_file("reminder_time_list.txt");
+        if (time_list_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            reminder.reminder_time_list.clear();
+            while (!time_list_file.atEnd()) {
+                QString line = time_list_file.readLine().trimmed();
+                if (line.isEmpty()) continue;
+                QTime time = QTime::fromString(line, "HH:mm:ss");
+                reminder.reminder_time_list.append(time);
+            }
+            time_list_file.close();
+        }
 
         qInfo() << "配置文件读取成功";
     }
@@ -71,10 +83,19 @@ void ConfigManager::write() {
     Settings.setValue("remaining_days_to_play_countdown_sound", reminder.remaining_days_to_play_countdown_sound);
     Settings.setValue("remaining_days_to_play_heartbeat_sound", reminder.remaining_days_to_play_heartbeat_sound);
     Settings.setValue("block_show_times", reminder.block_show_times);
-    Settings.setValue("reminder_time_list", reminder.reminder_time_list);
+    //Settings.setValue("reminder_time_list", reminder.reminder_time_list);
     Settings.endGroup();
 
     Settings.sync();
+
+    QFile time_list_file("reminder_time_list.txt");
+    if (time_list_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&time_list_file);
+        for (const QTime& time : reminder.reminder_time_list) {
+            out << time.toString("HH:mm:ss") << Qt::endl;
+        }
+        time_list_file.close();
+    }
 
     if (Settings.status() != QSettings::NoError) {
         QMessageBox::critical(NULL, QObject::tr("错误"), QObject::tr("配置文件写入失败<br>错误代码：") + QString::number(Settings.status()), QMessageBox::Ok);

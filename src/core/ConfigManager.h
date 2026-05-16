@@ -37,7 +37,7 @@ private:
         int remaining_days_to_play_countdown_sound = 30; // 剩余天数播放倒计时声音，默认30
         int remaining_days_to_play_heartbeat_sound = 14; // 剩余天数播放心跳声音，默认14
         unsigned block_show_times = 4; // 红色块显示次数，默认4
-        QVariantList reminder_time_list = { QTime(8, 13), QTime(9, 3), QTime(9, 53), QTime(10, 43), QTime(11, 38), QTime(14, 20), QTime(15, 3), QTime(15, 53), QTime(16, 43), QTime(18, 3) }; // 时间列表
+        QList<QTime> reminder_time_list = { QTime(8, 13), QTime(9, 3), QTime(9, 53), QTime(10, 43), QTime(11, 38), QTime(14, 20), QTime(15, 3), QTime(15, 53), QTime(16, 43), QTime(18, 3) }; // 时间列表
     };
 
 
