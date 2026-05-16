@@ -30,7 +30,7 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     TrayIcon = new QSystemTrayIcon(QIcon(":/images/icons/Universal-Timer-2_icon.512px.png"), this); // 系统托盘图标
     TrayIcon->setToolTip(tr("万能倒计时"));
     TrayIcon->setContextMenu(new QMenu(tr("万能倒计时")));
-    TrayIcon->contextMenu()->addAction(tr("设置"), FullscreenPages, &FullscreenPagesManager::showSettings); // 系统托盘菜单项：设置
+    TrayIcon->contextMenu()->addAction(tr("设置中心"), FullscreenPages, &FullscreenPagesManager::showSettings); // 系统托盘菜单项：设置
     TrayIcon->contextMenu()->addAction(tr("赞助"), [this] {
         DonatePageClass* DonatePage = new DonatePageClass;
         DonatePage->resize(DonatePage->width(), desktop.height() / 2);

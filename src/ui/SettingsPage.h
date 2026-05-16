@@ -2,7 +2,10 @@
 
 #include "core/ConfigManager.h"
 #include "ui/FloatingBar.h"
+#include "ui/SettingsNav.h"
+#include "ui/SettingsContent.h"
 
+#include <QResizeEvent>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QDateTimeEdit>
@@ -26,17 +29,28 @@ Q_SIGNALS:
     void clickedReminderPreviewButton();
     void clickedCloseButton();
 
-private:
+protected:
+    void resizeEvent(QResizeEvent* event) override;
 
-    void initializeObjects();
-    void adjustObjects();
-    void connectEmissions();
+private:
 
     // Config
     ConfigManager& config;
 
     // FloatingBar
     FloatingBarClass* FloatingBar;
+
+    // Content
+    SettingsContentClass* Content;
+    
+    // Nav
+    SettingsNavClass* Nav;
+
+/*
+    void initializeObjects();
+    void adjustObjects();
+    void connectEmissions();
+
 
     // GroupBox
     QGroupBox* GeneralSettingsGroupBox; // 文本和时间设置分组框
@@ -81,6 +95,6 @@ private:
 
     QRadioButton* FloatingBarOnTopRadioButton; // 设置悬浮条置顶单选按钮
     QRadioButton* FloatingBarOnBottomRadioButton; // 设置悬浮条置底单选按钮
-
+*/
 
 };

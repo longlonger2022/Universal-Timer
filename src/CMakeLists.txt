@@ -35,6 +35,10 @@ set(PROJECT_SOURCES
     ui/ReminderPage.cpp
     ui/SettingsPage.h
     ui/SettingsPage.cpp
+    ui/SettingsNav.h
+    ui/SettingsNav.cpp
+    ui/SettingsContent.h
+    ui/SettingsContent.cpp
     ui/WelcomePage.h
     ui/WelcomePage.cpp
     ui/AboutPage.h

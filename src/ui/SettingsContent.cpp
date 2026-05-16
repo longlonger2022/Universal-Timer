@@ -1,0 +1,279 @@
+#include "core/Global.h"
+#include "ui/SettingsContent.h"
+
+#include <QListView>
+#include <QFormLayout>
+
+SettingsContentClass::SettingsContentClass(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
+    : QStackedWidget(parent), config(cfg), FloatingBar(bar)
+{
+
+    initializeObjects();
+    connectEmissions();
+
+}
+
+SettingsContentClass::~SettingsContentClass()
+{}
+
+void SettingsContentClass::setCurrentPage(const Page& page) {
+    switch (page) {
+        case Page::None: this->setCurrentIndex(0); break;
+        case Page::GeneralSettingsPage: this->setCurrentWidget(GeneralSettingsPage); break;
+        case Page::FloatingBarSettingsPage: this->setCurrentWidget(FloatingBarSettingsPage); break;
+        case Page::ReminderSettingsPage: this->setCurrentWidget(ReminderSettingsPage); break;
+        case Page::DonatePage: this->setCurrentWidget(DonatePage); break;
+        case Page::AboutPage: this->setCurrentWidget(AboutPage); break;
+    }
+}
+
+void SettingsContentClass::initializeObjects() {
+    // Pages
+    GeneralSettingsPage = new QWidget(this);
+    FloatingBarSettingsPage = new QWidget(this);
+    ReminderSettingsPage = new QWidget(this);
+    DonatePage = new DonatePageClass(this);
+    AboutPage = new AboutPageClass(this);
+
+    // Settings Items
+    // General
+    TargetDateTimeEdit = new QDateTimeEdit(config.general.target_date_time, GeneralSettingsPage);
+    TargetDateTimeEdit->setCalendarPopup(true);
+    TargetDateTimeEdit->setDisplayFormat("yyyy-MM-dd HH:mm:ss"); // 设置显示格式
+    LanguageComboBox = new QComboBox(GeneralSettingsPage);
+
+    // Floating Bar
+    IsShowFloatingBarCheckBox = new QCheckBox(tr("是否显示悬浮条"), FloatingBarSettingsPage);
+    IsShowFloatingBarCheckBox->setChecked(config.floating_bar.is_show_floating_bar);
+    FloatingBarTextLineEdit = new QLineEdit(config.floating_bar.floating_bar_text, FloatingBarSettingsPage);
+    FloatingBarTextLineEdit->setPlaceholderText(tr("悬浮条文本"));
+    FloatingBarLevelComboBox = new QComboBox(FloatingBarSettingsPage);
+    FloatingBarLevelComboBox->addItems({tr("置顶"), tr("置底")});
+    FloatingBarLevelComboBox->setCurrentIndex(config.floating_bar.floating_bar_on_top ? 0 : 1);
+    FloatingBarPositionComboBox = new QComboBox(FloatingBarSettingsPage);
+    FloatingBarPositionComboBox->addItems({tr("左上"), tr("中上"), tr("右上")});
+    FloatingBarPositionComboBox->setCurrentIndex(config.floating_bar.floating_bar_position == FloatingBarPosition::TopLeft ? 0 : (config.floating_bar.floating_bar_position == FloatingBarPosition::TopCenter ? 1 : 2 ));
+    FloatingBarHeightSpinBox = new QSpinBox(FloatingBarSettingsPage);
+    FloatingBarHeightSpinBox->setRange(0, 5714);
+    FloatingBarHeightSpinBox->setValue(config.floating_bar.floating_bar_height);
+    FloatingBarHeightSpinBox->setSuffix(tr(" 像素")); // 悬浮条高度后缀文本
+    FloatingBarBorderRadiusSpinBox = new QSpinBox(FloatingBarSettingsPage);
+    FloatingBarBorderRadiusSpinBox->setRange(0, config.floating_bar.floating_bar_height / 2);
+    FloatingBarBorderRadiusSpinBox->setValue(config.floating_bar.floating_bar_border_radius);
+    FloatingBarBorderRadiusSpinBox->setSuffix(tr(" 像素")); // 悬浮条圆角半径后缀文本
+
+    // Reminder
+    IsShowReminderCheckBox = new QCheckBox(tr("是否显示全屏提醒"), ReminderSettingsPage);
+    IsShowReminderCheckBox->setChecked(config.reminder.is_show_reminder);
+    ReminderTitleLineEdit = new QLineEdit(config.reminder.reminder_text, ReminderSettingsPage);
+    ReminderTitleLineEdit->setPlaceholderText(tr("全屏提醒标题"));
+    ReminderTextLineEdit = new QLineEdit(config.reminder.reminder_small_text, ReminderSettingsPage);
+    ReminderTextLineEdit->setPlaceholderText(tr("全屏提醒文本"));
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox = new QSpinBox(ReminderSettingsPage);
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setRange(INT_MIN, INT_MAX);
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setValue(config.reminder.remaining_days_to_play_countdown_sound);
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放倒计时音效前缀文本
+    ReminderRemainingDaysToPlayCountdownSoundSpinBox->setSuffix(tr(" 天时播放倒计时提醒音")); // 剩余天数播放倒计时音效后缀文本
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox = new QSpinBox(ReminderSettingsPage);
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setRange(INT_MIN, INT_MAX);
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setValue(config.reminder.remaining_days_to_play_heartbeat_sound);
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setPrefix(tr("剩余天数≤ ")); // 剩余天数播放心跳音效前缀文本
+    ReminderRemainingDaysToPlayHeartbeatSoundSpinBox->setSuffix(tr(" 天时播放心跳提醒音")); // 剩余天数播放心跳音效后缀文本
+    ReminderBlockShowTimesSpinBox = new QSpinBox(ReminderSettingsPage);
+    ReminderBlockShowTimesSpinBox->setRange(0, USHRT_MAX);
+    ReminderBlockShowTimesSpinBox->setValue(config.reminder.block_show_times);
+    ReminderBlockShowTimesSpinBox->setSuffix(tr(" 次")); // 提醒音播放次数和方块闪烁次数后缀文本
+    ReminderPreviewButton= new QPushButton(tr("预览"), ReminderSettingsPage);
+
+    for (QComboBox* child : this->findChildren<QComboBox*>()) {
+        QListView* ListView = new QListView(child);
+        ListView->setAutoFillBackground(false);
+        child->setView(ListView);
+    }
+
+    for (QWidget* child : FloatingBarSettingsPage->findChildren<QWidget*>())
+        if (child != IsShowFloatingBarCheckBox)
+            child->setEnabled(config.floating_bar.is_show_floating_bar);
+
+    for (QWidget* child : ReminderSettingsPage->findChildren<QWidget*>())
+        if (child != IsShowReminderCheckBox)
+            child->setEnabled(config.reminder.is_show_reminder);
+
+    QFormLayout* GeneralSettingsPageLayout = new QFormLayout(GeneralSettingsPage);
+    GeneralSettingsPageLayout->addRow(tr("目标时间："), TargetDateTimeEdit);
+    GeneralSettingsPageLayout->addRow(tr("语言："), LanguageComboBox);
+    GeneralSettingsPageLayout->setContentsMargins(25, 25, 25, 25);
+    GeneralSettingsPage->setLayout(GeneralSettingsPageLayout);
+
+    QFormLayout* FloatingBarSettingsPageLayout = new QFormLayout(FloatingBarSettingsPage);
+    FloatingBarSettingsPageLayout->addRow(IsShowFloatingBarCheckBox);
+    FloatingBarSettingsPageLayout->addRow(tr("悬浮条文本："), FloatingBarTextLineEdit);
+    FloatingBarSettingsPageLayout->addRow(tr("悬浮条层级："), FloatingBarLevelComboBox);
+    FloatingBarSettingsPageLayout->addRow(tr("悬浮条位置："), FloatingBarPositionComboBox);
+    FloatingBarSettingsPageLayout->addRow(tr("悬浮条高度："), FloatingBarHeightSpinBox);
+    FloatingBarSettingsPageLayout->addRow(tr("悬浮条圆角半径："), FloatingBarBorderRadiusSpinBox);
+    FloatingBarSettingsPageLayout->setContentsMargins(25, 25, 25, 25);
+    FloatingBarSettingsPage->setLayout(FloatingBarSettingsPageLayout);
+
+    QFormLayout* ReminderSettingsPageLayout = new QFormLayout(ReminderSettingsPage);
+    ReminderSettingsPageLayout->addRow(IsShowReminderCheckBox);
+    ReminderSettingsPageLayout->addRow(tr("全屏提醒标题："), ReminderTitleLineEdit);
+    ReminderSettingsPageLayout->addRow(tr("全屏提醒文本："), ReminderTextLineEdit);
+    ReminderSettingsPageLayout->addRow(ReminderRemainingDaysToPlayCountdownSoundSpinBox);
+    ReminderSettingsPageLayout->addRow(ReminderRemainingDaysToPlayHeartbeatSoundSpinBox);
+    ReminderSettingsPageLayout->addRow(tr("提醒音播放次数和方块闪烁次数："), ReminderBlockShowTimesSpinBox);
+    ReminderSettingsPageLayout->addRow(ReminderPreviewButton);
+    ReminderSettingsPageLayout->setContentsMargins(25, 25, 25, 25);
+    ReminderSettingsPage->setLayout(ReminderSettingsPageLayout);
+
+    this->addWidget(new QWidget(this));
+    this->addWidget(GeneralSettingsPage);
+    this->addWidget(FloatingBarSettingsPage);
+    this->addWidget(ReminderSettingsPage);
+    this->addWidget(DonatePage);
+    this->addWidget(AboutPage);
+    this->setCurrentPage(Page::None);
+}
+
+void SettingsContentClass::connectEmissions() {
+
+    // General
+    connect(TargetDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [this](const QDateTime& date_time) {
+        config.set(config.general.target_date_time, date_time);
+        });
+    // todo)) update_interval...
+
+    // FloatingBar
+    connect(IsShowFloatingBarCheckBox, &QCheckBox::checkStateChanged, this, [this] {
+        config.set(config.floating_bar.is_show_floating_bar, IsShowFloatingBarCheckBox->isChecked());
+        if (!config.floating_bar.is_show_floating_bar) {
+            FloatingBar->hide();
+        }
+        else FloatingBar->show();
+        for (QWidget* child : FloatingBarSettingsPage->findChildren<QWidget*>())
+            if (child != IsShowFloatingBarCheckBox)
+                child->setEnabled(config.floating_bar.is_show_floating_bar);
+        });
+    connect(FloatingBarTextLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
+        config.set(config.floating_bar.floating_bar_text, text);
+        });
+    connect(FloatingBarLevelComboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
+        config.set(config.floating_bar.floating_bar_on_top, index == 0);
+        FloatingBar->setWindowFlags((config.floating_bar.floating_bar_on_top ? Qt::WindowStaysOnTopHint : Qt::WindowStaysOnBottomHint) | Qt::FramelessWindowHint | Qt::Tool);
+        FloatingBar->hide();
+        FloatingBar->show();
+#ifdef Q_OS_WIN
+        if (config.floating_bar.floating_bar_on_top) {
+            QMessageBox::information(this, tr("提示"), tr("已设置悬浮条置顶，需要重新打开程序才可生效。"));
+        }
+#endif
+        });
+    connect(FloatingBarPositionComboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
+        config.set(config.floating_bar.floating_bar_position, index == 0 ? FloatingBarPosition::TopLeft : (index == 1 ? FloatingBarPosition::TopCenter : FloatingBarPosition::TopRight));
+        });
+    connect(FloatingBarHeightSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
+        config.set(config.floating_bar.floating_bar_height, value);
+        FloatingBar->setFixedHeight(value);
+        QFont font;
+        font.setPixelSize(value * GOLDEN_RATIO_INV);
+        FloatingBar->Bar->setFont(font);
+        FloatingBarBorderRadiusSpinBox->setMaximum(value / 2);
+        });
+    connect(FloatingBarBorderRadiusSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
+        config.set(config.floating_bar.floating_bar_border_radius, value);
+        FloatingBar->Bar->setStyleSheet("background: rgba(255, 255, 255, 0.75); border-radius: " + QString::number(value) + "px; color: red;"); // 更新悬浮条样式
+        });
+
+    // Reminder
+    connect(IsShowReminderCheckBox, &QCheckBox::checkStateChanged, this, [this] {
+        config.set(config.reminder.is_show_reminder, IsShowReminderCheckBox->isChecked());
+        for (QWidget* child : ReminderSettingsPage->findChildren<QWidget*>())
+            if (child != IsShowReminderCheckBox)
+                child->setEnabled(config.reminder.is_show_reminder);
+        });
+    connect(ReminderTitleLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
+        config.set(config.reminder.reminder_text, text);
+        });
+    connect(ReminderTextLineEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
+        config.set(config.reminder.reminder_small_text, text);
+        });
+    connect(ReminderRemainingDaysToPlayCountdownSoundSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
+        config.set(config.reminder.remaining_days_to_play_countdown_sound, value);
+        });
+    connect(ReminderRemainingDaysToPlayHeartbeatSoundSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
+        config.set(config.reminder.remaining_days_to_play_heartbeat_sound, value);
+        });
+    connect(ReminderBlockShowTimesSpinBox, &QSpinBox::valueChanged, this, [this](int value) {
+        config.set(config.reminder.block_show_times, value);
+        });
+    connect(ReminderPreviewButton, &QPushButton::clicked, this, [this] {
+        emit clickedReminderPreviewButton();
+        });
+
+}
+
+void SettingsContentClass::resizeEvent(QResizeEvent* event) {
+    QStackedWidget::resizeEvent(event);
+    
+    QFont font;
+    font.setPixelSize(this->height() * 0.025);
+    for (QWidget* child : this->findChildren<QWidget*>()) {
+        child->setFont(font);
+    }
+
+    this->setStyleSheet(QString(R"(
+            QWidget {
+                background-color: transparent;
+            }
+            QStackedWidget {
+                border-left: 3px solid qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 0, 0, 1), stop:1 transparent);
+            }
+            QComboBox QAbstractItemView::viewport, QComboBox QFrame, QComboBox QListView {
+                background-color: rgb(40, 0, 0);
+                border: none;
+            }
+            QComboBox QAbstractItemView, QComboBox QAbstractItemView::item {
+                background-color: rgb(40, 0, 0);
+                color: white;
+                border: none;
+                border-radius: %1px;
+                padding: %2px;
+                margin: 0px;
+            }
+            QComboBox QAbstractItemView::item:hover {
+                background-color: rgb(60, 0, 0);
+            }
+            QComboBox QAbstractItemView::item:pressed {
+                background-color: rgb(80, 0, 0);
+            }
+            QComboBox QAbstractItemView::item:selected {
+                background-color: rgb(100, 0, 0);
+            }
+            QComboBox::drop-down, QDateTimeEdit::drop-down {
+                width: %3px;
+                subcontrol-origin: border;
+            }
+            QSpinBox::up-button, QSpinBox::down-button {
+                width: %4px;
+                subcontrol-origin: border;
+            }
+            QLineEdit, QComboBox, QSpinBox, QDateTimeEdit, QTextEdit, QPushButton {
+                background-color: rgba(255, 0, 0, 0.25);
+                color: white;
+                border: none;
+                border-radius: %1px;
+                padding: %2px;
+            }
+            QLineEdit:hover, QComboBox:hover, QSpinBox:hover, QDateTimeEdit:hover, QTextEdit:hover, QPushButton:hover {
+                background-color: rgba(255, 0, 0, 0.3);
+            }
+            QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDateTimeEdit:focus, QTextEdit:focus, QPushButton:pressed {
+                background-color: rgba(255, 0, 0, 0.4);
+            }
+            QLineEdit:disabled, QComboBox:disabled, QSpinBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QPushButton:disabled {
+                background-color: rgba(255, 0, 0, 0.1);
+                color: gray;
+            }
+        )").arg(this->height() * 0.03 / 4).arg((this->height() * 0.03 / GOLDEN_RATIO_INV - this->height() * 0.03) / 2).arg(this->height() * 0.03 / GOLDEN_RATIO_INV).arg(this->height() * 0.03 / GOLDEN_RATIO_INV / 2)
+    );
+}

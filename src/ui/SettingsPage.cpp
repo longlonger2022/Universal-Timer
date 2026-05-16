@@ -16,19 +16,40 @@ SettingsPageClass::SettingsPageClass(QWidget* parent, ConfigManager& cfg, Floati
                             subcontrol-origin: margin;\
                             subcontrol-position: top left;\
                         }\
-                        QLabel, QCheckBox, QRadioButton {\
+                        QWidget {\
                             color: white;\
                         }");
     
-    initializeObjects();
-    adjustObjects();
-    connectEmissions();
+    //initializeObjects();
+    //adjustObjects();
+    //connectEmissions();
+
+    Content = new SettingsContentClass(this, config, FloatingBar);
+    Content->show();
+    Nav = new SettingsNavClass(this, Content);
+    Nav->show();
+
+    connect(Content, &SettingsContentClass::clickedReminderPreviewButton, this, [this] {
+        emit clickedReminderPreviewButton();
+        });
+    connect(Nav, &SettingsNavClass::clickedCloseButton, this, [this] {
+        emit clickedCloseButton();
+        });
 
 }
 
 SettingsPageClass::~SettingsPageClass()
 {}
 
+void SettingsPageClass::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+
+    Content->resize(this->width() * GOLDEN_RATIO_INV, this->height());
+    Content->move(this->width() - Content->width(), 0);
+    Nav->resize(this->width() * (1 - GOLDEN_RATIO_INV), this->height());
+
+}
+/*
 void SettingsPageClass::initializeObjects() {
 
     // Creates
@@ -267,4 +288,4 @@ void SettingsPageClass::connectEmissions() {
         emit clickedCloseButton();
         });
 
-}
+}*/
