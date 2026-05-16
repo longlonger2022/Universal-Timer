@@ -3,6 +3,7 @@
 
 #include <QListView>
 #include <QFormLayout>
+#include <QMessageBox>
 
 SettingsContentClass::SettingsContentClass(QWidget* parent, ConfigManager& cfg, FloatingBarClass* bar)
     : QStackedWidget(parent), config(cfg), FloatingBar(bar)
