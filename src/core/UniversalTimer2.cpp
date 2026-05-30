@@ -33,10 +33,10 @@ UniversalTimer2::UniversalTimer2(QObject* parent)
     TrayIcon->contextMenu()->addAction(tr("设置中心"), FullscreenPages, &FullscreenPagesManager::showSettings); // 系统托盘菜单项：设置
     TrayIcon->contextMenu()->addAction(tr("赞助"), [this] {
         DonatePageClass* DonatePage = new DonatePageClass;
+        DonatePage->setAttribute(Qt::WA_DeleteOnClose);
         DonatePage->resize(DonatePage->width(), desktop.height() / 2);
         DonatePage->move((desktop.width() - DonatePage->width()) / 2, (desktop.height() - DonatePage->height()) / 2);
         DonatePage->show();
-        connect(DonatePage, &DonatePageClass::destroyed, DonatePage, &QObject::deleteLater, Qt::SingleShotConnection);
         });
     TrayIcon->contextMenu()->addAction(tr("关于"), AboutPage, &AboutPageClass::showNormal);
     TrayIcon->contextMenu()->addAction(tr("刷新"), this, &UniversalTimer2::refresh); // 系统托盘菜单项：刷新
