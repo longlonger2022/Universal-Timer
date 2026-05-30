@@ -18,8 +18,9 @@ AboutPageClass::AboutPageClass(QWidget* parent)
             "版本：%1<br>"
             "开发者：<br>"
             "    龙ger_longer (B站同名，GitHub用户名longlonger2022)<br>"
-            "    new_pointer (B站同名，GitHub用户名new5Fpointer)").arg(CURRENT_VERSION_STRING),
-            this
+            "    new_pointer (B站同名，GitHub用户名new5Fpointer)"
+            ).arg(CURRENT_VERSION_STRING),
+        this
         );
     AboutLabel->setWordWrap(true);
     AboutLabel->setAlignment(Qt::AlignLeft);
